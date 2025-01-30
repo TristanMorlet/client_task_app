@@ -1,10 +1,13 @@
 import React from 'react'
 import { useState } from 'react'
-export default function TaskList({}) {
+export default function TaskList({ }) {
+    const TODO = "To-Do"
+    const STARTED = "Started"
+    const FINISHED = "Finished"
     const [openLists, setOpenLists] = useState({
-            "To-Do": false,
-            "Started": false,
-            "Finished": false,
+            [TODO]: false,
+            [STARTED]: false,
+            [FINISHED]: false,
         });
     const [listToDo, setListToDo] = useState([]);
 
@@ -17,21 +20,29 @@ export default function TaskList({}) {
     } 
   
     return (
-    <div className="grid grid-cols-3 gap-4 p-5 w-2/3">
-        {["To-Do", "Started", "Finished"].map((title, index) => (
-            <div key={index} className="p-4 flex flex-col bg-gray-50 rounded-lg border border-gray-300">
-                <h4 
-                    className="text-lg font-semibold p-3 border-b cursor-pointer flex justify-between items-center"
-                    onClick={() => toggleListView(title)}>
-                        {title}
-                        <span>{openLists[title] ? "▲" : "▼"}</span>
-                </h4>
-                <div className={`flex flex-col overflow-hidden transition-all duration-300 ${openLists[title] ? "max-h-40 opacity-100 visibility-visible": "max-h-0 opacity-0 visibility-hidden"} ease-in-out`}>
-                    <p className="my-2 px-3">Item {index + 1}</p>
-                    <PopUpForm/>
-                </div>
-            </div>
-        ))}
+    <div className="grid grid-cols-3 gap-4 p-30 w-2/3">
+            {[TODO, STARTED, FINISHED].map((title, index) => {
+                return (
+                    <div key={index} className="p-4 flex flex-col bg-gray-50 rounded-lg border border-gray-300 h-fit">
+                        <h4
+                            className="text-lg font-semibold p-3 border-b cursor-pointer flex justify-between items-center"
+                            onClick={() => toggleListView(title)}>
+                            {title}
+                            <span>{openLists[title] ? "▲" : "▼"}</span>
+                    </h4>
+                        {openLists[title] === true ?
+                            (<div className={"flex flex-col overflow-hidden transition-all duration-300 ease-in-out"}>
+
+                                <p className="my-2 px-3">Item {index + 1}</p>
+                                <p className="my-2 px-3">Item {index + 1}</p>
+                                <p className="my-2 px-3">Item {index + 1}</p>
+                                <p className="my-2 px-3">Item {index + 1}</p>
+                                <PopUpForm />
+                            </div>) : null}
+                        
+                    </div>
+                )
+            })}
     </div>
   )
 }
