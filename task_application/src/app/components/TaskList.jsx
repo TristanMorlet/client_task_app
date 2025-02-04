@@ -10,7 +10,23 @@ export default function TaskList({}) {
     const FINISHED = "Finished"
 
     const tasks = useSelector((state) => state.tasks.tasks);
-    const groupedTasks = groupTasksByStatus(tasks);
+    const filters = useSelector((state) => {
+        return state.tasks.filters;
+    });
+    console.log(filters);
+    console.log(tasks);
+
+    const filteredTasks = tasks.filter((task) => {
+        const matchesAssignedTo = filters.assignedTo.length === 0 || filters.assignedTo.includes(task.assignedTo);
+        const matchesTags = filters.tags.length === 0 || task.tags.some((tag) => filters.tags.includes(tag));
+        const matchesDateAdded = filters.dateAdded === null || task.dateAdded === filters.dateAdded;
+        const matchesOverdue = filters.overdue === false || !task.overdue;
+        return matchesAssignedTo && matchesTags && matchesDateAdded && matchesOverdue;
+    })
+
+
+
+    const groupedTasks = groupTasksByStatus(filteredTasks);
     const defaultTaskLists = [TODO, STARTED, FINISHED];
   
     return (

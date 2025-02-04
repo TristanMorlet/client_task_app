@@ -2,6 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     tasks: [],
+    filters: {
+        assignedTo: "",
+        dateAdded: null,
+        tags: [],
+        overdue: false
+    }
 }
 
 const taskSlice = createSlice({
@@ -19,17 +25,23 @@ const taskSlice = createSlice({
             }
         },
 
+        updateTaskProperty: (state, action) => {
+            const {taskId, property, value} = action.payload;
+            const task = state.tasks.find(task => task.id === taskId)
+            if (task) {
+                task[property] = value;
+            }
+        },
+
         deleteTask: (state, action) => {
             state.tasks = state.tasks.filter(task => task.id !== action.payload);
         },
-        toggleTaskStatus: (state, action) => {
-            const task = state.tasks.find((task) => task.id === action.payload);
-            if (task) {
-                task.status = task.status === "To-Do" ? "Started" : "Finished";
-            }
+
+        setFilter: (state, action) => {
+            state.filters = {...state.filters, ...action.payload}
         }
     }
 });
 
-export const { addTask, updateTask, deleteTask } = taskSlice.actions;
+export const { addTask, updateTask, deleteTask, updateTaskProperty, setFilter } = taskSlice.actions;
 export default taskSlice.reducer;

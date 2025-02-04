@@ -20,17 +20,18 @@ export default function TaskColumn({title, tasks}) {
                     {title}
                     <span>{openLists[title] ? "▲" : "▼"}</span>
             </h4>
-            {openLists[title] === true ?
-                        (<div className={"flex flex-col overflow-hidden transition-all duration-300 ease-in-out"}>
-            {tasks.length > 0 ? (
-                tasks.map((task) => (
-                    <Task key={task.id} task={task} />
-                ))
-              ) : (
-                <p className="text-gray-400 text-sm text-center">No tasks in {title}</p>
-              )}
-                <PopUpForm status={title}/>
-            </div>) : null}
+            <div
+                 className={`transition-max-height duration-300 ease-in-out overflow-hidden ${
+                    openLists[title] ? 'max-h-screen overflow-y-auto' : 'max-h-0'
+                 }`}
+            >
+                {tasks.length > 0 ? (
+                    tasks.map((task) => <Task key={task.id} task={task} />)
+                ) : (
+                    <p className="text-gray-400 text-sm text-center">No tasks in {title}</p>
+                )}
+                <PopUpForm status={title} />
+            </div>
         </div>
     )
 }
