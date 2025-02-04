@@ -10,9 +10,7 @@ export default function AllTasksPage() {
 
 
     return (
-    <div className="flex flex-col h-screen">
-            <Tabs/>
-            
+    <div className="flex flex-col h-screen"> 
             <div className="flex justify-between items-center px-5 py-3 m-3">
                 <div>
                     <h1 className=" font-bold text-4xl">Tasks</h1>
