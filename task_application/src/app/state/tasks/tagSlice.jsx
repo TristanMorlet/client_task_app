@@ -1,11 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [
-    "Tag 1",
-    "Tag 2",
-    "Tag 3",
-    "Tag 4"
-]
+const initialState = []
 
 const tagSlice = createSlice({
     name: "tags",
@@ -15,11 +10,12 @@ const tagSlice = createSlice({
             state.push(action.payload);
         },
 
-        removeTag: (state, action) => {
+        deleteTag: (state, action) => {
+            console.log(state)
             state.tags = state.tags.filter(tag => tag !== action.payload)
         },
     }
 })
 
-export const { addTag, removeTag } = tagSlice.actions
+export const { addTag, deleteTag } = tagSlice.actions
 export default tagSlice.reducer;

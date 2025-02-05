@@ -1,12 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    tagList: {
-        "Tag 1": false,
-        "Tag 2": false,
-        "Tag 3": false,
-        "Tag 4": false
-    },
+    tagList: {}
 };
 
 const tagListSlice = createSlice({

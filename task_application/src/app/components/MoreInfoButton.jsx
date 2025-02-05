@@ -7,7 +7,7 @@ export default function MoreInfoButton( {task} ) {
   
     const dispatch = useDispatch();
     const staffList = ["None", "Staff 1", "Staff 2", "Staff 3"];
-    const availableTags = ["Tag 1", "Tag 2", "Tag 3"];
+    const availableTags = useSelector((state) => state.tags)
 
 
     function handlePropertyChange(property, newValue) {

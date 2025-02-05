@@ -1,9 +1,19 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilter } from '../state/tasks/taskSlice'
 export default function Filter() {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.tasks.filters);
+
+  const [dropDownOpen, setDropDownOpen] = useState({
+    assignedTo: false,
+    overdue: false,
+    tags: false,
+    filter: false
+  })
+
+
+
   console.log(filters);
   function handleFilterChange(e) {
     const { name, value, type, checked } = e.target;
@@ -23,61 +33,111 @@ export default function Filter() {
     }
     dispatch(setFilter(updatedFilters));
   }
+  function toggleDropdown(name) {
+    setDropDownOpen(prev => ({ ...prev, [name]: !prev[name] }));
+  }
 
-    const tags = ["Tag 1", "Tag 2", "Tag 3"]
+    const tags = useSelector((state) => state.tags)
     const staff = ["Staff 1", "Staff 2", "Staff 3"]
   
     return (
-    <div className="flex flex-col space-y-2">
-        <div className="flex items-center">
-            <span className="mr-2">Filter by:</span>
-        </div>
-
-        <div className="flex flex-col">
-        <label className="mb-1">Assigned To:</label>
-            <select
-                name="assignedTo"
-                className="border border-gray-300 rounded px-2 py-1"
-                onChange={handleFilterChange}
+    <div className="relative inline-block text-left">
+        <div>
+            <button
+                className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none"
+                onClick={() => toggleDropdown('filter')}
             >
-                <option value="">All</option>
-                {staff.map((member) => (
-                    <option key={member} value={member}>
-                        {member}
-                    </option>
-                ))}
-
-            </select>
+                Filter
+            </button>
         </div>
 
-        <div className="flex flex-col">
-            <label className="mb-1">Tags:</label>
-                {tags.map((tag) => (
-                    <label key={tag} className="flex items-center space-x-2">
+
+
+        {dropDownOpen.filter && (
+            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                
+                <div className='px-4 py-2'>
+                    <button
+                        type="button"
+                        className="w-full text-left"
+                        onClick={()=> toggleDropdown('assignedTo')}
+                    >
+                        Assigned To:
+                    </button>
+                    {dropDownOpen.assignedTo && (
+                        <div 
+                            className="mt-2 space-y-2"
+                        >
+                            <select
+                                name="assignedTo"
+                                className="border border-gray-300 rounded px-2 py-1"
+                                onChange={handleFilterChange}
+                            >
+                                <option value="">All</option>
+                                {staff.map((member) => (
+                                    <option key={member} value={member}>
+                                        {member}
+                                    </option>
+                                ))}
+
+                            </select>
+                        </div>
+                    )}
+                </div>
+
+                <div className='px-4 py-2'>
+                    <button
+                        type="button"
+                        className="w-full text-left"
+                        onClick={()=> toggleDropdown('tags')}
+                    >
+                        Tags
+                    </button>
+                    {dropDownOpen.tags && (
+                        <div 
+                            className="mt-2 space-y-2"
+                        >
+                        {tags.map((tag) => (
+                            <div key={tag} className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    name="tags"
+                                    value={tag}
+                                    checked={filters.tags.includes(tag)}
+                                    onChange={handleFilterChange}
+                                    className="cursor-pointer"
+                                />
+                                <label>{tag}</label>
+                            </div>
+
+                        ))}
+                        </div>
+                    )}
+                </div>
+                <div className="px-4 py-2">
+                    <button
+                        type="button"
+                        className="w-full text-left"
+                        onClick={()=> toggleDropdown('overdue')}
+                    >
+                        Overdue
+                    </button>
+                    {dropDownOpen.overdue && (
+                      <div
+                        className="mt-2 space-y-2"
+                      > 
                         <input
                             type="checkbox"
-                            name="tags"
-                            value={tag}
-                            checked={filters.tags.includes(tag)}
+                            name="overdue"
+                            checked={filters.overdue}
+                            className="border border-gray-300 rounded px-2 py-1 cursor-pointer"
                             onChange={handleFilterChange}
-                            className="cursor-pointer"
                         />
-                        <span>{tag}</span>
-                    </label>
-
-                ))}
-        </div>
-
-        <div className="flex items-center">
-            <label className="mr-2">Overdue:</label>
-            <input
-                type="checkbox"
-                name="overdue"
-                checked={filters.overdue}
-                className="border border-gray-300 rounded px-2 py-1"
-                onChange={handleFilterChange}
-            />
-        </div>
+                      </div>
+                    )}
+                </div>
+            </div>
+        )}
     </div>
   );
 }

@@ -2,14 +2,22 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleListView } from '../state/tasks/tagListSlice';
 import Task from './Task';
+import { deleteTag } from '../state/tasks/tagSlice';
 export default function TagsColumn({title, tasks}) {
 
     const dispatch = useDispatch();
     
     const tagsState = useSelector((state) => state.tagList.tagList)
+    console.log(tagsState)
     
     function handleToggleListView() {
         dispatch(toggleListView(title))
+    }
+
+    function handleDeleteTag() {
+        console.log(title)
+        dispatch(deleteTag(tagsState, title))
+
     }
   
     return (
@@ -30,6 +38,11 @@ export default function TagsColumn({title, tasks}) {
             ) : (
                 <p className="text-gray-400 text-sm text-center">No tasks in {title}</p>
             )}
+             <button 
+                className="w-full mt-2 mx-2 bg-red-300 px-2 py-1 rounded hover:bg-red-200 items-center text-sm text-white"
+                onClick={handleDeleteTag}>
+                    Delete Tag
+            </button>
         </div>
     </div>
   )
