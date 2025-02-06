@@ -26,7 +26,7 @@ export default function TagsList() {
   function handleSubmit(e) {
     e.preventDefault()
     
-    if (!tagName.trim) return;
+    if (!tagName.trim || tags.includes(tagName) ) return;
 
     const newTag = tagName
     dispatch(addTag(newTag));
@@ -40,7 +40,7 @@ export default function TagsList() {
   
   return (
     <div className="flex items-center justify-start">
-      <div className={`grid grid-cols-${tags.length} gap-4 p-5`}>
+      <div className='grid grid-flow-col auto-cols-max gap-4 p-5'>
           {tags.map((title, index) => (
               <TagsColumn key={index} title={title} tasks={groupedTasksbyTags[title] || []} />
           ))}

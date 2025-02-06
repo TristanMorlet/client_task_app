@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, {useState} from 'react'
 import { formatDate } from '../functions/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTaskProperty, deleteTask } from '../state/tasks/taskSlice';
@@ -8,6 +8,8 @@ export default function MoreInfoButton( {task} ) {
     const dispatch = useDispatch();
     const staffList = ["None", "Staff 1", "Staff 2", "Staff 3"];
     const availableTags = useSelector((state) => state.tags)
+    const [newTags, setNewTags] = useState(task.tags || []);
+
 
 
     function handlePropertyChange(property, newValue) {
@@ -18,10 +20,15 @@ export default function MoreInfoButton( {task} ) {
     }
 
     function handleTagChange(tag) {
-        const updatedTags = newTags.includes(tag) ? newTags.filter(tag2 => tag2 !== tag)  : [...newTags, tag];
-        setNewTags(updatedTags);
-        dispatch(updateTaskProperty({...task, tags: updatedTags}));
+        setNewTags((prevTags) => {
+            const updatedTags = prevTags.includes(tag) 
+                ? prevTags.filter(t => t !== tag)
+                : [...prevTags, tag]
 
+                dispatch(updateTaskProperty({taskId: task.id, property: "tags", value: updatedTags}));
+
+                return updatedTags
+        });
     }
   
     return (
@@ -57,7 +64,8 @@ export default function MoreInfoButton( {task} ) {
                             <div key={tag} className="flex items-center space-x-2">
                                 <input
                                     type="checkbox"
-                                    checked={task.tags.includes(tag)}
+                                    value={tag}
+                                    checked={newTags.includes(tag)}
                                     onChange={() => handleTagChange(tag)}
                                     className="cursor-pointer"
                                 />

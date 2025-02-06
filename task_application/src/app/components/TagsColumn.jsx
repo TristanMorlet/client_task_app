@@ -16,7 +16,7 @@ export default function TagsColumn({title, tasks}) {
 
     function handleDeleteTag() {
         console.log(title)
-        dispatch(deleteTag(tagsState, title))
+        dispatch(deleteTag(title))
 
     }
   

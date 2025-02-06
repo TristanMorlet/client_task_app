@@ -117,11 +117,13 @@ export default function PopUpForm({ status }) {
                                                 value={tag}
                                                 checked={tags.includes(tag)}
                                                 onChange={(e) => {
-                                                    if (e.target.checked) {
-                                                        setTags([...tags, tag]);
+                                                    setTags((prevTags) => {
+                                                        if (e.target.checked) {
+                                                        return ([...prevTags, tag]);
                                                     } else {
-                                                        setTags(tags.filter(t => t !== tag));
+                                                        return (prevTags.filter(t => t !== tag));
                                                     }
+                                                })
                                                 }}
                                                 className="mr-2"
                                             />

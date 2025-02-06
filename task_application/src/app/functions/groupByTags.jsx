@@ -1,10 +1,11 @@
 export function groupTasksByTags(tasks) {
     return tasks.reduce((groups, task) => {
-        const { tags } = task;
-        if (!groups[tags]) {
-            groups[tags] = [];
-        }
-        groups[tags].push(task);
+        task.tags.forEach(tag => {
+            if (!groups[tag]) {
+                groups[tag] = [];
+            }
+            groups[tag].push(task);
+        })
         return groups;
     }, {});
  }

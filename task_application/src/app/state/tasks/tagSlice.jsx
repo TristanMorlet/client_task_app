@@ -12,7 +12,7 @@ const tagSlice = createSlice({
 
         deleteTag: (state, action) => {
             console.log(state)
-            state.tags = state.tags.filter(tag => tag !== action.payload)
+            return state.filter(tag => tag !== action.payload)
         },
     }
 })
