@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTask } from '../state/tasks/taskSlice';
 
 
@@ -14,7 +14,7 @@ export default function PopUpForm({ status }) {
     const dispatch = useDispatch();
 
     const staffList = ["None", "Staff 1", "Staff 2", "Staff 3"];
-    const availableTags = ["Tag 1", "Tag 2", "Tag 3"];
+    const availableTags = useSelector((state) => state.tags)
 
 
 
@@ -117,11 +117,13 @@ export default function PopUpForm({ status }) {
                                                 value={tag}
                                                 checked={tags.includes(tag)}
                                                 onChange={(e) => {
-                                                    if (e.target.checked) {
-                                                        setTags([...tags, tag]);
+                                                    setTags((prevTags) => {
+                                                        if (e.target.checked) {
+                                                        return ([...prevTags, tag]);
                                                     } else {
-                                                        setTags(tags.filter(t => t !== tag));
+                                                        return (prevTags.filter(t => t !== tag));
                                                     }
+                                                })
                                                 }}
                                                 className="mr-2"
                                             />

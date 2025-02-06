@@ -1,85 +1,44 @@
-import React from 'react'
-import { useState, useEffect, useRef } from 'react'
+
+import React, {useState} from 'react'
 import { formatDate } from '../functions/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTask, deleteTask } from '../state/tasks/taskSlice';
+import { updateTaskProperty, deleteTask } from '../state/tasks/taskSlice';
 export default function MoreInfoButton( {task} ) {
   
-    const [infoOpen, setInfoOpen] = useState(false);
-    const [newAssignedTo, setNewAssignedTo] = useState(task.assignedTo);
-    const [newDeadline, setNewDeadline] = useState(task.deadline);
-    const [newTags, setNewTags] = useState(task.tags);
-    const [newStatus, setNewStatus] = useState(task.status);
-
     const dispatch = useDispatch();
     const staffList = ["None", "Staff 1", "Staff 2", "Staff 3"];
-    const availableTags = ["Tag 1", "Tag 2", "Tag 3"];
+    const availableTags = useSelector((state) => state.tags)
+    const [newTags, setNewTags] = useState(task.tags || []);
 
 
-    const prevAssignedTo = useRef(task.assignedTo);
-    const prevDeadline = useRef(task.deadline);
-    const prevTags = useRef(task.tags);
-    const prevStatus = useRef(task.status);
 
-    useEffect(() => {
-        if (prevAssignedTo.current !== newAssignedTo) {
-          dispatch(updateTask({ ...task, assignedTo: newAssignedTo }));
-          prevAssignedTo.current = newAssignedTo;
-        }
-      }, [newAssignedTo, dispatch, task]);
-    
-      useEffect(() => {
-        if (prevDeadline.current !== newDeadline) {
-          dispatch(updateTask({ ...task, deadline: newDeadline }));
-          prevDeadline.current = newDeadline;
-        }
-      }, [newDeadline, dispatch, task]);
-    
-      useEffect(() => {
-        if (prevTags.current !== newTags) {
-          dispatch(updateTask({ ...task, tags: newTags }));
-          prevTags.current = newTags;
-        }
-      }, [newTags, dispatch, task]);
-    
-      useEffect(() => {
-        if (prevStatus.current !== newStatus) {
-          dispatch(updateTask({ ...task, status: newStatus }));
-          prevStatus.current = newStatus;
-        }
-      }, [newStatus, dispatch, task]);
-
-    function handleButtonClick() {
-        setInfoOpen(!infoOpen);
+    function handlePropertyChange(property, newValue) {
+        dispatch(updateTaskProperty({taskId: task.id, property, value: newValue}))
     }
-
     function handleDelete() {
         dispatch(deleteTask(task.id));
     }
 
     function handleTagChange(tag) {
-        const updatedTags = newTags.includes(tag) ? newTags.filter(tag2 => tag2 !== tag)  : [...newTags, tag];
-        setNewTags(updatedTags);
-        dispatch(updateTask({...task, tags: updatedTags}));
+        setNewTags((prevTags) => {
+            const updatedTags = prevTags.includes(tag) 
+                ? prevTags.filter(t => t !== tag)
+                : [...prevTags, tag]
 
+                dispatch(updateTaskProperty({taskId: task.id, property: "tags", value: updatedTags}));
+
+                return updatedTags
+        });
     }
   
     return (
-    <div className="relative h-fit">
-        <button 
-          className="font-bold text-lg mb-1"
-          onClick={handleButtonClick}>
-            ...
-        </button>
-
-        {infoOpen && (
             <div className="transition-all duration-300 ease-in-out overflow-hidden">
                 <div className="p-3 mt-2 bg-gray-50 border border-gray-300 rounded-md shadow-md text-sm text-gray-700 space-y-4">
                     <div className="flex justify-between items-center">
-                        <h4 className="font-semi-bold">Reassign</h4>
+                        <h4 className="font-semibold">Reassign</h4>
                         <select 
-                            value={newAssignedTo} 
-                            onChange={(e) => setNewAssignedTo(e.target.value)}
+                            value={task.assignedTo} 
+                            onChange={(e) => handlePropertyChange("assignedTo", e.target.value)}
                             className="p-1 border border-gray-300 rounded-md focus:border-gray-200"
                         >
                             {staffList.map(staff => (
@@ -89,22 +48,23 @@ export default function MoreInfoButton( {task} ) {
                     </div>
 
                     <div>
-                        <h4 className="font-semi-bold">Reschedule</h4>
+                        <h4 className="font-semibold">Reschedule</h4>
                         <input 
                             type="text" 
-                            value={newDeadline} 
-                            onChange={(e) => setNewDeadline(e.target.value)} 
+                            value={task.deadline} 
+                            onChange={(e) => handlePropertyChange("deadline", e.target.value)} 
                             placeholder='DD/MM/YYYY'
                             className="w-full p-1 border border-gray-300 rounded-md focus:border-gray-200"
                         />
                     </div>
 
                     <div>
-                        <h4 className="font-semi-bold">Tags</h4>
+                        <h4 className="font-semibold">Tags</h4>
                         {availableTags.map(tag => (
                             <div key={tag} className="flex items-center space-x-2">
                                 <input
                                     type="checkbox"
+                                    value={tag}
                                     checked={newTags.includes(tag)}
                                     onChange={() => handleTagChange(tag)}
                                     className="cursor-pointer"
@@ -115,10 +75,10 @@ export default function MoreInfoButton( {task} ) {
                     </div>
 
                     <div>
-                        <h4 className="font-semi-bold">Status</h4>
+                        <h4 className="font-semibold">Status</h4>
                         <select
-                            value={newStatus}
-                            onChange={(e) => setNewStatus(e.target.value)}
+                            value={task.status}
+                            onChange={(e) => handlePropertyChange("status", e.target.value)}
                             className="w-full p-1 border border-gray-300 rounded-md hover:border-gray-200 focus:border-gray-200"
                         >
                             <option value="To-Do">To Do</option>
@@ -134,7 +94,4 @@ export default function MoreInfoButton( {task} ) {
                     </div>
             </div>
         </div>
-        )}
-    </div>
-  )
-}
+)}
