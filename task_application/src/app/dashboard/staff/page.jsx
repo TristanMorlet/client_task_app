@@ -1,6 +1,10 @@
 import React from 'react'
-import Tabs from '../components/Tabs'
-import Filter from '../components/Filter'
+import Tabs from '../../components/Tabs'
+import Filter from '../../components/Filter'
+import StaffList from '@/app/components/StaffList'
+import AddStaff from '@/app/components/AddStaff'
+
+
 
 export default function StaffPage() {
   return (
@@ -12,6 +16,12 @@ export default function StaffPage() {
                 </div>
                 <Filter/>
             </div>
+            <div className="flex content-center justify-end mx-8 text-sm">
+              <div>
+                <AddStaff />
+              </div>
+            </div>
+            <StaffList />
         </div>
     </div>
   )

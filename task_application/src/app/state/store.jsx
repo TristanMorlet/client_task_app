@@ -3,6 +3,7 @@ import taskListReducer from "./tasks/taskListSlice";
 import taskReducer from "./tasks/taskSlice";
 import tagListReducer from "./tasks/tagListSlice"
 import tagReducer from "./tasks/tagSlice"
+import staffReducer from "./staff/staffSlice"
 
 
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
         taskList: taskListReducer,
         tasks: taskReducer,
         tagList: tagListReducer,
-        tags: tagReducer
+        tags: tagReducer,
+        staff: staffReducer
     },
 });
