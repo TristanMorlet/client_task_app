@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-    staff: [],
-}
+const initialState = [
+    {name: "None", dateAdded: null, email: null}
+]
 
 const staffSlice = createSlice({
     name: "staff",
@@ -12,10 +12,18 @@ const staffSlice = createSlice({
             state.push(action.payload)
         },
         deleteStaff: (state, action) => {
-            state.staff = state.staff.filter(staff => staff !== action.payload)
+
+            console.log(state)
+            return state.filter(staff => staff.name !== action.payload)
+           
         },
+        setSort: (state, action) => {
+            console.log(state)
+            console.log(action.payload)
+            return action.payload
+        }
     },
 });
 
-export const { addStaff, deleteStaff } = staffSlice.actions
+export const { addStaff, deleteStaff, setSort } = staffSlice.actions
 export default staffSlice.reducer;

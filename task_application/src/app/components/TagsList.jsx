@@ -40,7 +40,7 @@ export default function TagsList() {
   
   return (
     <div className="flex items-center justify-start">
-      <div className='grid grid-flow-col auto-cols-max gap-4 p-5'>
+      <div className='grid grid-flow-col auto-cols-max gap-4 p-5 overflow-x-auto'>
           {tags.map((title, index) => (
               <TagsColumn key={index} title={title} tasks={groupedTasksbyTags[title] || []} />
           ))}

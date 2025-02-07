@@ -1,5 +1,5 @@
 import React from 'react'
-import MoreInfoButton from './MoreInfoButton'
+import MoreInfoButton from './Buttons/MoreInfoButton'
 import { useState } from 'react'
 export default function Task( {task}) {
   

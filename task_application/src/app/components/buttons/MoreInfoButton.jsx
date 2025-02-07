@@ -1,12 +1,12 @@
 
 import React, {useState} from 'react'
-import { formatDate } from '../functions/formateDate'
+import { formatDate } from '../../functions/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTaskProperty, deleteTask } from '../state/tasks/taskSlice';
+import { updateTaskProperty, deleteTask } from '../../state/tasks/taskSlice';
 export default function MoreInfoButton( {task} ) {
   
     const dispatch = useDispatch();
-    const staffList = ["None", "Staff 1", "Staff 2", "Staff 3"];
+    const staff = useSelector((state) => state.staff)
     const availableTags = useSelector((state) => state.tags)
     const [newTags, setNewTags] = useState(task.tags || []);
 
@@ -41,8 +41,8 @@ export default function MoreInfoButton( {task} ) {
                             onChange={(e) => handlePropertyChange("assignedTo", e.target.value)}
                             className="p-1 border border-gray-300 rounded-md focus:border-gray-200"
                         >
-                            {staffList.map(staff => (
-                                <option key={staff} value={staff}>{staff}</option>
+                            {staff.map(staff => (
+                                <option key={staff.name} value={staff.name}>{staff.name}</option>
                             ))}
                         </select>
                     </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask } from '../state/tasks/taskSlice';
+import { addTask } from '../../state/tasks/taskSlice';
 
 
 
@@ -13,9 +13,8 @@ export default function PopUpForm({ status }) {
     const [tags, setTags] = useState([])
     const dispatch = useDispatch();
 
-    const staffList = ["None", "Staff 1", "Staff 2", "Staff 3"];
     const availableTags = useSelector((state) => state.tags)
-
+    const staff = useSelector((state) => state.staff)
 
 
     function togglePopUp() {
@@ -83,12 +82,12 @@ export default function PopUpForm({ status }) {
                                     className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200"
                                     value={assignedTo}
                                     onChange={(e) => setAssignedTo(e.target.value)}>
-                                    {staffList.map((staff) => (
+                                    {staff.map((staff) => (
                                         <option 
-                                            key={staff} 
-                                            value={staff}
+                                            key={staff.name} 
+                                            value={staff.name}
                                         >
-                                                {staff}
+                                                {staff.name}
                                         </option>
                                     ))}
                                 </select>
