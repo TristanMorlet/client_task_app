@@ -1,8 +1,9 @@
+
 import React from 'react'
 import Tabs from '../../components/Tabs'
-import Filter from '../../components/Filter'
+import Sort from '../../components/Sort'
 import StaffList from '@/app/components/StaffList'
-import AddStaff from '@/app/components/AddStaff'
+import AddStaff from '@/app/components/Buttons/AddStaff'
 
 
 
@@ -14,7 +15,7 @@ export default function StaffPage() {
                 <div>
                     <h1 className="font-bold text-4xl">Staff</h1>
                 </div>
-                <Filter/>
+                <Sort />
             </div>
             <div className="flex content-center justify-end mx-8 text-sm">
               <div>

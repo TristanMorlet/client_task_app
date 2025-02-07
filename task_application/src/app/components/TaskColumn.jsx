@@ -2,7 +2,7 @@ import React from 'react'
 import Task from './Task';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleListView } from '../state/tasks/taskListSlice';
-import PopUpForm from './PopUpForm'
+import PopUpForm from './Buttons/PopUpForm'
 
 export default function TaskColumn({title, tasks}) {
     const dispatch = useDispatch();

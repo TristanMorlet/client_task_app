@@ -2,7 +2,7 @@
 
 import React, {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFilter } from '../state/tasks/taskSlice'
+import { setFilter, resetFilter } from '../state/tasks/taskSlice'
 export default function Filter() {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.tasks.filters);
@@ -38,10 +38,14 @@ export default function Filter() {
   function toggleDropdown(name) {
     setDropDownOpen(prev => ({ ...prev, [name]: !prev[name] }));
   }
+  function handleReset(){
+    dispatch(resetFilter())
+  }
 
     const tags = useSelector((state) => state.tags)
-    const staff = ["Staff 1", "Staff 2", "Staff 3"]
-  
+
+    const staff = useSelector((state) => state.staff)  
+    console.log(staff)
     return (
     <div className="relative inline-block text-left">
         <div>
@@ -75,10 +79,9 @@ export default function Filter() {
                                 className="border border-gray-300 rounded px-2 py-1"
                                 onChange={handleFilterChange}
                             >
-                                <option value="">All</option>
                                 {staff.map((member) => (
-                                    <option key={member} value={member}>
-                                        {member}
+                                    <option key={member.name} value={member.name}>
+                                        {member.name}
                                     </option>
                                 ))}
 
@@ -137,6 +140,14 @@ export default function Filter() {
                         />
                       </div>
                     )}
+                </div>
+                <div className="px-4 py-2 flex justify-center">
+                    <button 
+                        className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition text-sm flex justify-center content-center"
+                        onClick={handleReset}
+                        >
+                            Clear
+                    </button>
                 </div>
             </div>
         )}
