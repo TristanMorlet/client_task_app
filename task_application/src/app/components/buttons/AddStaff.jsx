@@ -28,7 +28,9 @@ export default function AddStaff() {
     const newStaff = {
       name: staffName,
       dateAdded: Date.now(),
-      email: staffEmail
+      email: staffEmail,
+      tasksAssigned: 0,
+      tasksCompleted: 0
     }
     dispatch(addStaff(newStaff));
     togglePopUp();

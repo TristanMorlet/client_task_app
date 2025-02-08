@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask } from '../../state/tasks/taskSlice';
+import { addTaskThunk } from '../../state/tasks/taskSlice';
 
 
 
@@ -43,7 +43,7 @@ export default function PopUpForm({ status }) {
             overdue: false,
         }
 
-        dispatch(addTask(newTask))
+        dispatch(addTaskThunk(newTask))
         togglePopUp();
     }
     

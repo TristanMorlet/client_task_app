@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "./state/store";
 import Tabs from "./components/Tabs";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

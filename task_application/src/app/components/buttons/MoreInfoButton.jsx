@@ -2,7 +2,7 @@
 import React, {useState} from 'react'
 import { formatDate } from '../../functions/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTaskProperty, deleteTask } from '../../state/tasks/taskSlice';
+import { updateTaskThunk, deleteTaskThunk } from '../../state/tasks/taskSlice';
 export default function MoreInfoButton( {task} ) {
   
     const dispatch = useDispatch();
@@ -13,23 +13,24 @@ export default function MoreInfoButton( {task} ) {
 
 
     function handlePropertyChange(property, newValue) {
-        dispatch(updateTaskProperty({taskId: task.id, property, value: newValue}))
+        dispatch(updateTaskThunk({taskId: task.id, property, value: newValue}))
     }
     function handleDelete() {
-        dispatch(deleteTask(task.id));
+        dispatch(deleteTaskThunk(task.id));
     }
 
     function handleTagChange(tag) {
         setNewTags((prevTags) => {
             const updatedTags = prevTags.includes(tag) 
-                ? prevTags.filter(t => t !== tag)
-                : [...prevTags, tag]
+            ? prevTags.filter(t => t !== tag)
+            : [...prevTags, tag]
 
-                dispatch(updateTaskProperty({taskId: task.id, property: "tags", value: updatedTags}));
+            dispatch(updateTaskThunk({taskId: task.id, property: "tags", value: updatedTags}));
 
-                return updatedTags
-        });
-    }
+            return updatedTags
+        })
+    };
+    
   
     return (
             <div className="transition-all duration-300 ease-in-out overflow-hidden">
@@ -42,7 +43,7 @@ export default function MoreInfoButton( {task} ) {
                             className="p-1 border border-gray-300 rounded-md focus:border-gray-200"
                         >
                             {staff.map(staff => (
-                                <option key={staff.name} value={staff.name}>{staff.name}</option>
+                                <option key={staff.dateAdded} value={staff.name}>{staff.name}</option>
                             ))}
                         </select>
                     </div>

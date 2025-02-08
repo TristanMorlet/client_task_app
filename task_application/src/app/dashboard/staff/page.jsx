@@ -15,14 +15,14 @@ export default function StaffPage() {
                 <div>
                     <h1 className="font-bold text-4xl">Staff</h1>
                 </div>
-                <Sort />
+                <Sort page="staff" />
             </div>
             <div className="flex content-center justify-end mx-8 text-sm">
               <div>
                 <AddStaff />
               </div>
             </div>
-            <StaffList />
+            <StaffList page="staff" />
         </div>
     </div>
   )
