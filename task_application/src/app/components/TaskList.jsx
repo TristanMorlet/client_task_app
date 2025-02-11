@@ -1,14 +1,16 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import TaskColumn from './TaskColumn';
 import { groupTasksByStatus } from '../functions/groupByStatus';
+import { incrementTaskAssigned, incrementTaskCompleted, decrementTaskAssigned, decrementTaskCompleted } from '../state/staff/staffSlice';
 
 
 export default function TaskList({}) {
     const TODO = "To-Do"
     const STARTED = "Started"
     const FINISHED = "Finished"
-
+    
+    const dispatch = useDispatch()
     const tasks = useSelector((state) => state.tasks.tasks);
     const filters = useSelector((state) => {
         return state.tasks.filters;
