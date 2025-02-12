@@ -5,7 +5,7 @@ import { groupTasksByStatus } from '../functions/groupByStatus';
 import { incrementTaskAssigned, incrementTaskCompleted, decrementTaskAssigned, decrementTaskCompleted } from '../state/staff/staffSlice';
 
 
-export default function TaskList({}) {
+export default function TaskList({searchText}) {
     const TODO = "To-Do"
     const STARTED = "Started"
     const FINISHED = "Finished"
@@ -19,11 +19,12 @@ export default function TaskList({}) {
     console.log(tasks);
 
     const filteredTasks = tasks.filter((task) => {
+        const matchesSearchText = task.name.toLowerCase().includes(searchText.toLowerCase());
         const matchesAssignedTo = filters.assignedTo.length === 0 || filters.assignedTo.includes(task.assignedTo);
         const matchesTags = filters.tags.length === 0 || task.tags.some((tag) => filters.tags.includes(tag));
         const matchesDateAdded = filters.dateAdded === null || task.dateAdded === filters.dateAdded;
         const matchesOverdue = filters.overdue === false || !task.overdue;
-        return matchesAssignedTo && matchesTags && matchesDateAdded && matchesOverdue;
+        return matchesSearchText && matchesAssignedTo && matchesTags && matchesDateAdded && matchesOverdue;
     })
 
 

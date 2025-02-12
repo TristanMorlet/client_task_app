@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { addTaskThunk } from '../../state/tasks/taskSlice';
+import { addTask} from '../../state/tasks/taskSlice';
+import { assignTask } from '@/app/state/staff/staffSlice';
 
 
 
@@ -43,7 +44,11 @@ export default function PopUpForm({ status }) {
             overdue: false,
         }
 
-        dispatch(addTaskThunk(newTask))
+        dispatch(addTask(newTask))
+
+        if (assignedTo !== "None") {
+            dispatch(assignTask( {staffName: assignedTo, taskId: newTask.id}))
+        }
         togglePopUp();
     }
     
