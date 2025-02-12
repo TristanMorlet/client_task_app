@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSort } from '../state/staff/staffSlice';
 
-export default function Sort( {page} ) {
+export default function Sort( {listOfOptions} ) {
   
     const dispatch = useDispatch();
     const staff = useSelector((state) => state.staff)
@@ -13,7 +13,7 @@ export default function Sort( {page} ) {
     const [dropDownOpen, setDropDownOpen] = useState({sort: false})
 
     function handleSortChange(sortType) {
-        let sortedStaff = [...staff];
+        let sortedStaff = staff.filter(member => member.name !== "None");
         console.log(sortedStaff)
 
         switch (sortType) {
@@ -23,10 +23,10 @@ export default function Sort( {page} ) {
             case 'lastName':
                 sortedStaff.sort((a,b) => a.name.split(' ')[1].localeCompare(b.name.split(" ")[1]))
                 break;
-            case 'dateAddedNewest':
+            case 'dateNewest':
                 sortedStaff.sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded))
                 break;
-            case 'dateAddedOldest':
+            case 'dateOldest':
                 sortedStaff.sort((a,b) => new Date(a.dateAdded) - new Date(b.dateAdded))
                 break;
             case 'leastTasks':
@@ -35,10 +35,10 @@ export default function Sort( {page} ) {
             case 'mostTasks':
                 sortedStaff.sort((a,b) => b.tasksAssigned - a.tasksAssigned)
                 break;
-            case 'leastTasksCompleted':
+            case 'leastCompleted':
                 sortedStaff.sort((a,b) => a.tasksCompleted - b.tasksCompleted)
                 break;
-            case 'mostTasksCompleted':
+            case 'mostCompleted':
                 sortedStaff.sort((a,b) => b.tasksCompleted - a.tasksCompleted)
                 break;
             case 'lowCompletedRate':
@@ -69,108 +69,20 @@ export default function Sort( {page} ) {
 
             {dropDownOpen.sort && (
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                    {page === "staff" && (
-                    <>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('firstName')}
-                            >
-                                First Name (A-Z)
-                            </button>
-                        </div>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('lastName')}
-                            >
-                                Last Name (A-Z)
-                            </button>
-                        </div>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('dateAddedNewest')}
-                            >
-                                Date Added (Newest)
-                            </button>
-                        </div>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('dateAddedOldest')}
-                            >
-                                Date Added (Oldest)
-                            </button>
-                        </div>
-                    </>
+                    {listOfOptions.map((option) => (
+                        <div 
+                        key={option.name}
+                        className="px-4 py-2">
+                        <button
+                            type="button"
+                            className="w-full text-left"
+                            onClick={() => handleSortChange(option.name)}
+                        >
+                            {option.displayName}
+                        </button>
+                    </div>
+                    )
                     )}
-
-                    {page == "metrics" && (
-                    <>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('mostTasks')}
-                            >
-                                Most Tasks Assigned
-                            </button>
-                        </div>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('leastTasks')}
-                            >
-                                Least Tasks Assigned
-                            </button>
-                        </div>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('mostTasksCompleted')}
-                            >
-                                Most Tasks Completed
-                            </button>
-                        </div>
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('leastTasksCompleted')}
-                            >
-                                Least Tasks Completed
-                            </button>
-                        </div>  
-
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('highCompletedRate')}
-                            >
-                                Highest Completion Rate
-                            </button>
-                        </div> 
-
-                        <div className="px-4 py-2">
-                            <button
-                                type="button"
-                                className="w-full text-left"
-                                onClick={() => handleSortChange('lowCompletedRate')}
-                            >
-                                Lowest Completion Rate
-                            </button>
-                        </div> 
-                    </>
-                    )}
-                    
                 </div>
             )}
         </div>

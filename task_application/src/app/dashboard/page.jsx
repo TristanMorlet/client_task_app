@@ -6,12 +6,14 @@ import Tabs from '../components/Tabs'
 import TaskList from '../components/TaskList'
 import Filter from '../components/Filter'
 import TagsList from '../components/TagsList'
+import ProgressBar from '../components/ProgressBar'
 export default function AllTasksPage() {
-
+    const [searchText, setSearchText] = useState('');
 
 
     return (
     <div>
+        <Tabs setSearch={setSearchText} />
         <div className="flex flex-col h-screen"> 
             <div className="flex justify-between items-center px-5 py-3 m-3">
                 <div>
@@ -19,11 +21,12 @@ export default function AllTasksPage() {
                 </div>
                 <Filter/>
             </div>
-            <TaskList />
+            <TaskList searchText={searchText}/>
             <div className="flex justify-between items-center px-5 py-3 m-3">
                 <h1 className="font-bold text-4xl">Tags</h1>
             </div>
             <TagsList />
+            <ProgressBar page="alltasks"/>
         </div>
     </div>
   )

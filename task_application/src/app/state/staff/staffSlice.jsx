@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [
-    {name: "None", dateAdded: null, email: null, tasksAssigned: null, tasksCompleted: null}
+    {name: "None", dateAdded: null, email: null, tasksAssigned: null, tasksCompleted: null, taskList: []}
 ]
 
 const staffSlice = createSlice({
@@ -23,38 +23,38 @@ const staffSlice = createSlice({
             return action.payload
         },
 
-        incrementTaskAssigned: (state, action) => {
-           const staffMember = state.find(staff => staff.name === action.payload)
+        assignTask: (state, action) => {
+           const {staffName, taskId} = action.payload
+           const staffMember = state.find(staff => staff.name === staffName)
            console.log(staffMember)
            if (staffMember) {
+            staffMember.taskList.push(taskId)
             staffMember.tasksAssigned += 1
            }
            console.log(staffMember.tasksAssigned)
         },
 
-        decrementTaskAssigned: (state, action) => {
-           const staffMember = state.find(staff => staff.name === action.payload)
+        unassignTask: (state, action) => {
+           const {staffName, taskId} = action.payload
+           const staffMember = state.find(staff => staff.name === staffName)
            if (staffMember) {
+             staffMember.taskList = staffMember.taskList.filter(id => id !== taskId)
              staffMember.tasksAssigned -= 1
            }
         },
 
-        incrementTaskCompleted: (state, action) => {
-            const staffMember = state.find(staff => staff.name === action.payload)
+        completeTask: (state, action) => {
+            const {staffName, taskId} = action.payload
+            const staffMember = state.find(staff => staff.name === staffName)
             console.log(staffMember)
             if (staffMember) {
+             staffMember.taskList = staffMember.taskList.filter(id => id !== taskId)
              staffMember.tasksCompleted += 1
             }
             console.log(staffMember.tasksCompleted)
          },
-         decrementTaskCompleted: (state, action) => {
-            const staffMember = state.find(staff => staff.name === action.payload)
-            if (staffMember) {
-              staffMember.tasksCompleted -= 1
-            }
-         },
     },
 });
 
-export const { addStaff, deleteStaff, setSort, addTaskAssigned, incrementTaskCompleted, decrementTaskAssigned, incrementTaskAssigned, decrementTaskCompleted } = staffSlice.actions
+export const { addStaff, deleteStaff, setSort, assignTask, unassignTask, completeTask, } = staffSlice.actions
 export default staffSlice.reducer;

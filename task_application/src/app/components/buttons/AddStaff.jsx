@@ -30,7 +30,8 @@ export default function AddStaff() {
       dateAdded: Date.now(),
       email: staffEmail,
       tasksAssigned: 0,
-      tasksCompleted: 0
+      tasksCompleted: 0,
+      taskList: [],
     }
     dispatch(addStaff(newStaff));
     togglePopUp();

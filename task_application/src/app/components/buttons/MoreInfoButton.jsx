@@ -2,7 +2,8 @@
 import React, {useState} from 'react'
 import { formatDate } from '../../functions/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTaskThunk, deleteTaskThunk } from '../../state/tasks/taskSlice';
+import { updateTask, deleteTask } from '../../state/tasks/taskSlice';
+import { assignTask, unassignTask, completeTask } from '@/app/state/staff/staffSlice';
 export default function MoreInfoButton( {task} ) {
   
     const dispatch = useDispatch();
@@ -13,10 +14,27 @@ export default function MoreInfoButton( {task} ) {
 
 
     function handlePropertyChange(property, newValue) {
-        dispatch(updateTaskThunk({taskId: task.id, property, value: newValue}))
+        if (property === "assignedTo" && task.assignedTo !== newValue){
+            if (task.assignedTo !== "None") {
+                dispatch(unassignTask({ staffName: task.assignedTo, taskId: task.id }))
+            }
+            if (newValue !== "None") {
+                dispatch(assignTask({ staffName: newValue, taskId: task.id }))
+            }
+        }
+        if (property === "status" && newValue === "Finished" && task.status !== "Finished"){
+            dispatch(completeTask({ staffName: task.assignedTo, taskId: task.id }))
+        }
+    
+        
+        dispatch(updateTask({taskId: task.id, property, value: newValue}))
     }
     function handleDelete() {
-        dispatch(deleteTaskThunk(task.id));
+        dispatch(deleteTask(task.id))
+        
+        if (task.assignedTo !== "None") {
+            dispatch(unassignTask({staffName: task.assignedTo, taskId: task.id }))
+        };
     }
 
     function handleTagChange(tag) {
@@ -25,7 +43,7 @@ export default function MoreInfoButton( {task} ) {
             ? prevTags.filter(t => t !== tag)
             : [...prevTags, tag]
 
-            dispatch(updateTaskThunk({taskId: task.id, property: "tags", value: updatedTags}));
+            dispatch(updateTask({taskId: task.id, property: "tags", value: updatedTags}));
 
             return updatedTags
         })
