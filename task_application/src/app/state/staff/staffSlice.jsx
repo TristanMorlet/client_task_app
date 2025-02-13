@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [
-    {name: "None", dateAdded: null, email: null, tasksAssigned: null, tasksCompleted: null, taskList: []}
+    {name: "None", dateAdded: null, email: null, tasksAssigned: null, tasksCompleted: null, taskList: [], completeList: [],}
 ]
 
 const staffSlice = createSlice({
@@ -12,46 +12,61 @@ const staffSlice = createSlice({
             state.push(action.payload)
         },
         deleteStaff: (state, action) => {
-
-            console.log(state)
             return state.filter(staff => staff.name !== action.payload)
-           
         },
         setSort: (state, action) => {
-            console.log(state)
-            console.log(action.payload)
             return action.payload
         },
 
         assignTask: (state, action) => {
            const {staffName, taskId} = action.payload
            const staffMember = state.find(staff => staff.name === staffName)
-           console.log(staffMember)
+
+           console.log("Staff Member being Assigned a Task", staffMember.name)
+
            if (staffMember) {
-            staffMember.taskList.push(taskId)
-            staffMember.tasksAssigned += 1
+
+                if (!staffMember.taskList.includes(taskId)) {
+                staffMember.taskList.push(taskId)
+                }
+
+            staffMember.tasksAssigned = (staffMember.taskList.length + staffMember.completeList.length)
            }
-           console.log(staffMember.tasksAssigned)
+
+           console.log("Number of Tasks Assigned to Staff Member", staffMember.tasksAssigned)
         },
 
         unassignTask: (state, action) => {
            const {staffName, taskId} = action.payload
            const staffMember = state.find(staff => staff.name === staffName)
+
            if (staffMember) {
+             
              staffMember.taskList = staffMember.taskList.filter(id => id !== taskId)
-             staffMember.tasksAssigned -= 1
+             staffMember.tasksAssigned = staffMember.taskList.length + staffMember.completeList.length
            }
+
         },
 
         completeTask: (state, action) => {
             const {staffName, taskId} = action.payload
             const staffMember = state.find(staff => staff.name === staffName)
-            console.log(staffMember)
+
+            console.log("Staff Member completing a Task", staffMember.name)
+
             if (staffMember) {
+
              staffMember.taskList = staffMember.taskList.filter(id => id !== taskId)
-             staffMember.tasksCompleted += 1
+
+             if (!staffMember.completeList.includes(taskId)) {
+                staffMember.completeList.push(taskId)
             }
-            console.log(staffMember.tasksCompleted)
+
+             staffMember.tasksCompleted = staffMember.completeList.length
+            }
+            
+            console.log("Number of Tasks Assigned to Staff Member", staffMember.tasksAssigned)
+            console.log("Number of Tasks Completed by Staff Member", staffMember.tasksCompleted)
          },
     },
 });

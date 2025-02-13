@@ -9,7 +9,12 @@ import AddStaff from '@/app/components/Buttons/AddStaff'
 
 export default function StaffPage() {
   const [searchText, setSearchText] = useState('');
-  const sortOptions = [{name: "firstName", displayName: "First Name (A-Z)"}, {name: "lastName", displayName: "Last Name (A-Z)"}, {name: "dateNewest", displayName: "Date Added (Newest)"}, {name:"dateOldest", displayName: "Date Added (Oldest)"}]
+  const sortOptions = [
+    {name: "firstName", displayName: "First Name (A-Z)"}, 
+    {name: "lastName", displayName: "Last Name (A-Z)"}, 
+    {name: "dateNewest", displayName: "Date Added (Newest)"}, 
+    {name:"dateOldest", displayName: "Date Added (Oldest)"}
+  ]
   return (
     <div>
       <Tabs setSearch={setSearchText} />

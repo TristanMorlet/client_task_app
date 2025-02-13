@@ -6,11 +6,11 @@ import { addTag } from '../state/tasks/tagSlice'
 export default function TagsList() {
   
   const tasks = useSelector((state) => state.tasks.tasks)
-  console.log(tasks)
+  console.log("Tasks available to TagsList component", tasks)
   const tags = useSelector((state) => state.tags)
-  console.log(tags)
+  console.log("Tags available to TagsList component", tags)
   const groupedTasksbyTags = groupTasksByTags(tasks);
-  console.log(tags.length)
+  console.log("Length of the list of Tags", tags.length)
   const [tagName, setTagName] = useState("")
   const [formOpen, setFormOpen] = useState(false)
 

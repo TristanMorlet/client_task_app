@@ -3,10 +3,37 @@ import React, {useState} from 'react'
 import Sort from '@/app/components/Sort'
 import StaffList from '@/app/components/StaffList'
 import Tabs from '@/app/components/Tabs'
+import DateRangeSelector from '@/app/components/DateRangeSelector'
 
 export default function MetricsPage() {
   const [searchText, setSearchText] = useState('');
-  const sortOptions = [{name: "mostTasks", displayName: "Most Tasks Assigned"}, {name: "leastTasks", displayName: "Least Tasks Assigned"}, {name: "mostCompleted", displayName: "Most Tasks Completed"}, {name: "leastCompleted", displayName: "Least Tasks Completed"}, {name: "highCompletedRate", displayName: "Highest Completion Rate"}, {name: "lowCompletedRate", displayName: "Lowest Completion Rate"}]
+  const [dateRange, setDateRange] = useState([]);
+  const sortOptions = [
+    {name: "mostTasks", displayName: "Most Tasks Assigned"}, 
+    {name: "leastTasks", displayName: "Least Tasks Assigned"}, 
+    {name: "mostCompleted", displayName: "Most Tasks Completed"}, 
+    {name: "leastCompleted", displayName: "Least Tasks Completed"}, 
+    {name: "highCompletedRate", displayName: "Highest Completion Rate"}, 
+    {name: "lowCompletedRate", displayName: "Lowest Completion Rate"}
+  ]
+
+  function handleSelect(range) {
+    console.log("Date Range before formatting", range)
+    if (range) {
+        const formatRange = range.map(date => {
+            return new Date(date).toLocaleDateString()
+        });
+        console.log("New Date Range set and formatted", formatRange)
+        setDateRange(formatRange)
+        
+        } else {
+            console.log("Date Cleared")
+            setDateRange(null)
+        }
+  }
+
+
+
   return (
     <div>
       <Tabs setSearch={setSearchText} />
@@ -15,10 +42,11 @@ export default function MetricsPage() {
                 <div>
                     <h1 className="font-bold text-4xl">Metrics</h1>
                 </div>
+                <DateRangeSelector handleSelect={handleSelect}  />
                 <Sort listOfOptions={sortOptions} />
                 
               </div>
-              <StaffList searchText={searchText}page="metrics"/>
+              <StaffList searchText={searchText}page="metrics" dateRange={dateRange}/>
             </div>
     </div>
   )

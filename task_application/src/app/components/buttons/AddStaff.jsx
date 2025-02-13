@@ -32,8 +32,10 @@ export default function AddStaff() {
       tasksAssigned: 0,
       tasksCompleted: 0,
       taskList: [],
+      completeList: [],
     }
     dispatch(addStaff(newStaff));
+    console.log("New Staff Member Created", newStaff)
     togglePopUp();
   }
   

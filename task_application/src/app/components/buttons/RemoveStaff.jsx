@@ -12,7 +12,7 @@ export default function RemoveStaff( {member} ) {
     }
 
     function handleDeleteStaff() {
-        console.log(member)
+        console.log("Deleting Staff", member)
         dispatch(deleteStaff(member.name))
     }
     

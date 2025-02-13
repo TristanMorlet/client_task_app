@@ -16,7 +16,7 @@ export default function Filter() {
 
 
 
-  console.log(filters);
+  console.log("Current State of Filters", filters);
   function handleFilterChange(e) {
     const { name, value, type, checked } = e.target;
 
@@ -45,7 +45,7 @@ export default function Filter() {
     const tags = useSelector((state) => state.tags)
 
     const staff = useSelector((state) => state.staff)  
-    console.log(staff)
+    console.log("List of Staff Available to Filter", staff)
     return (
     <div className="relative inline-block text-left">
         <div>

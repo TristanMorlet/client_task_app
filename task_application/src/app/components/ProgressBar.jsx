@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux'
 
 export default function ProgressBar({page, member}) {
     const tasks = useSelector((state) => state.tasks.tasks)
-    console.log(tasks)
+    console.log("Task List Available to Progress Bar", tasks)
 
     const completedTasks = tasks.filter((task) => {
         const finished = task.status === "Finished"
         return finished
         
     })
-    console.log(completedTasks)
+    console.log("Total Completed Tasks", completedTasks)
     
   
   

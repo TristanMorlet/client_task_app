@@ -11,7 +11,6 @@ const tagSlice = createSlice({
         },
 
         deleteTag: (state, action) => {
-            console.log(state)
             return state.filter(tag => tag !== action.payload)
         },
     }
