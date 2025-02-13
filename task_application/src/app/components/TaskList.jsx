@@ -15,8 +15,8 @@ export default function TaskList({searchText}) {
     const filters = useSelector((state) => {
         return state.tasks.filters;
     });
-    console.log(filters);
-    console.log(tasks);
+    console.log("Filters available to TaskList component", filters);
+    console.log("Task list available to TaskList component", tasks);
 
     const filteredTasks = tasks.filter((task) => {
         const matchesSearchText = task.name.toLowerCase().includes(searchText.toLowerCase());

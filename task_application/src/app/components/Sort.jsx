@@ -14,7 +14,7 @@ export default function Sort( {listOfOptions} ) {
 
     function handleSortChange(sortType) {
         let sortedStaff = staff.filter(member => member.name !== "None");
-        console.log(sortedStaff)
+        console.log("List of Staff Sorted", sortedStaff)
 
         switch (sortType) {
             case 'firstName':

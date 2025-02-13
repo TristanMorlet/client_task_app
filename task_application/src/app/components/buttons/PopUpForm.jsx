@@ -49,6 +49,8 @@ export default function PopUpForm({ status }) {
         if (assignedTo !== "None") {
             dispatch(assignTask( {staffName: assignedTo, taskId: newTask.id}))
         }
+
+        console.log("New Task Created", newTask)
         togglePopUp();
     }
     

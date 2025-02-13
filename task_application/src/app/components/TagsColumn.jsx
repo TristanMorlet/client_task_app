@@ -8,14 +8,14 @@ export default function TagsColumn({title, tasks}) {
     const dispatch = useDispatch();
     
     const tagsState = useSelector((state) => state.tagList.tagList)
-    console.log(tagsState)
+    console.log("List of Tags available to TagsColumn", tagsState)
     
     function handleToggleListView() {
         dispatch(toggleListView(title))
     }
 
     function handleDeleteTag() {
-        console.log(title)
+        console.log("Name of Tag To Be Deleted", title)
         dispatch(deleteTag(title))
 
     }

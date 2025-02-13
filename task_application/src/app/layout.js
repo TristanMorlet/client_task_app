@@ -5,6 +5,7 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "./state/store";
 import Tabs from "./components/Tabs";
+import 'rsuite/dist/rsuite-no-reset.min.css'
 
 
 const geistSans = Geist({
