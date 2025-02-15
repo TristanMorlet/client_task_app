@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { groupTasksByTags } from '../functions/groupByTags'
 import TagsColumn from './TagsColumn'
 import { addTag } from '../state/tasks/tagSlice'
-export default function TagsList() {
+export default function TagsList( {role} ) {
   
   const tasks = useSelector((state) => state.tasks.tasks)
   console.log("Tasks available to TagsList component", tasks)
@@ -45,11 +45,12 @@ export default function TagsList() {
               <TagsColumn key={index} title={title} tasks={groupedTasksbyTags[title] || []} />
           ))}
       </div>
-      <div>
+      {role === "worklead" && (
+        <div>
         <button 
-                className="mb-4 bg-gray-300 px-3 py-1 rounded hover:bg-gray-200"
-                onClick={togglePopUp}>
-                    +
+          className="mb-4 bg-gray-300 px-3 py-1 rounded hover:bg-gray-200"
+          onClick={togglePopUp}>
+              +
         </button>
 
           {formOpen && (
@@ -91,6 +92,8 @@ export default function TagsList() {
 
 
       </div>
+      )}
+      
     </div>
   )
 }

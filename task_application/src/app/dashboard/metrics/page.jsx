@@ -4,10 +4,12 @@ import Sort from '@/app/components/Sort'
 import StaffList from '@/app/components/StaffList'
 import Tabs from '@/app/components/Tabs'
 import DateRangeSelector from '@/app/components/DateRangeSelector'
+import { useSelector } from 'react-redux'
 
 export default function MetricsPage() {
   const [searchText, setSearchText] = useState('');
   const [dateRange, setDateRange] = useState([]);
+  const user = useSelector((state) => state.auth.user)
   const sortOptions = [
     {name: "mostTasks", displayName: "Most Tasks Assigned"}, 
     {name: "leastTasks", displayName: "Least Tasks Assigned"}, 
@@ -36,7 +38,7 @@ export default function MetricsPage() {
 
   return (
     <div>
-      <Tabs setSearch={setSearchText} />
+      <Tabs setSearch={setSearchText} role={user.role}/>
       <div className="flex flex-col h-screen"> 
             <div className="flex justify-between items-center px-5 py-3 m-3">
                 <div>

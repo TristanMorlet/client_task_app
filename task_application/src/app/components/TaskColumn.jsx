@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleListView } from '../state/tasks/taskListSlice';
 import PopUpForm from './Buttons/PopUpForm'
 
-export default function TaskColumn({title, tasks}) {
+export default function TaskColumn({title, tasks, role}) {
     const dispatch = useDispatch();
     const openLists = useSelector((state) => state.taskList.taskLists);
 
@@ -30,7 +30,9 @@ export default function TaskColumn({title, tasks}) {
                 ) : (
                     <p className="text-gray-400 text-sm text-center">No tasks in {title}</p>
                 )}
-                <PopUpForm status={title} />
+                {role === "worklead" && (
+                    <PopUpForm status={title} />
+                )}
             </div>
         </div>
     )

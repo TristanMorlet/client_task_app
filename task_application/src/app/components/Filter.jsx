@@ -3,6 +3,7 @@
 import React, {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilter, resetFilter } from '../state/tasks/taskSlice'
+import DateRangeSelector from './DateRangeSelector'
 export default function Filter() {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.tasks.filters);
@@ -35,6 +36,19 @@ export default function Filter() {
     }
     dispatch(setFilter(updatedFilters));
   }
+
+  function handleDateRangeSelect(range) {
+    if (range) {
+        const formattedRange = range.map(date => new Date(date).toISOString())
+        console.log(formattedRange)
+        dispatch(setFilter({ dateRange: formattedRange}))
+    } else {
+        dispatch(setFilter({ dateRange: null }))
+    }
+
+  }
+
+
   function toggleDropdown(name) {
     setDropDownOpen(prev => ({ ...prev, [name]: !prev[name] }));
   }
@@ -141,6 +155,11 @@ export default function Filter() {
                       </div>
                     )}
                 </div>
+
+                <div className="px-4 py-2">
+                    <DateRangeSelector handleSelect={handleDateRangeSelect} placement="bottomEnd" />
+                </div>
+
                 <div className="px-4 py-2 flex justify-center">
                     <button 
                         className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition text-sm flex justify-center content-center"
