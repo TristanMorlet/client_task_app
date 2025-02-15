@@ -6,7 +6,8 @@ const initialState = {
         assignedTo: "",
         dateAdded: null,
         tags: [],
-        overdue: false
+        overdue: false,
+        dateRange: null,
     }
 }
 
