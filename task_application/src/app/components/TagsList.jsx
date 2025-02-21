@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { groupTasksByTags } from '../functions/groupByTags'
+import { groupTasksByTags } from '../utils/groupByTags'
 import TagsColumn from './TagsColumn'
 import { addTag } from '../state/tasks/tagSlice'
 export default function TagsList( {role} ) {

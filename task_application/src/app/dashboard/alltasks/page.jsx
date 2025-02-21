@@ -1,16 +1,23 @@
 'use client'
 
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Tabs from '../../components/Tabs'
 import TaskList from '../../components/TaskList'
 import Filter from '../../components/Filter'
 import TagsList from '../../components/TagsList'
 import ProgressBar from '../../components/ProgressBar'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+
 export default function AllTasksPage() {
+    
+    
     const [searchText, setSearchText] = useState('');
     const { user } = useSelector((state) => state.auth)
+    console.log(user.role)
+
+
+
 
     return (
     <div>

@@ -1,6 +1,6 @@
 
 import React, {useState} from 'react'
-import { formatDate } from '../../functions/formateDate'
+import { formatDate } from '../../utils/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTask, deleteTask } from '../../state/tasks/taskSlice';
 import { assignTask, unassignTask, completeTask } from '@/app/state/staff/staffSlice';

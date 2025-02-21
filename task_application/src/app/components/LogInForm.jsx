@@ -1,12 +1,13 @@
 'use client'
-
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../state/users/authSlice'
 import { useRouter } from 'next/navigation' 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { loginUser } from '../utils/authHelper'
+import { checkAuth } from '../state/users/authSlice'
 
-export default function LoginPage() {
+export default function LogInForm() {
     const dispatch = useDispatch()
     const router = useRouter()
     const [role, setRole] = useState(null)
@@ -14,13 +15,18 @@ export default function LoginPage() {
     const [showWarning, setShowWarning] = useState(false)
     const registeredUsers = useSelector((state) => state.user)
 
-
-    function handleLogin() {
+    async function handleLogin() {
         const user = registeredUsers.find((u) => u.useremail === email && u.role === role)
 
         if (user) {
-            dispatch(login(user));
-            router.push("/dashboard/alltasks")
+            try {
+                const { token } = await loginUser(email, role)
+                dispatch(login({ email: user.email, role: user.role, token }));
+                router.push("/dashboard/alltasks")
+            } catch (error) {
+                console.error(error)
+                setShowWarning(true)
+            }
         } else {
             setShowWarning(true)
             return;

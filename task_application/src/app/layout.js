@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "./state/store";
 import Tabs from "./components/Tabs";
 import 'rsuite/dist/rsuite-no-reset.min.css'
+import AuthInit from "./authInit";
 
 
 const geistSans = Geist({
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider store={store}>
+          <AuthInit />
           {children}
         </Provider>
       </body>

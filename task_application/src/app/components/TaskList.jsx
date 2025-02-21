@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import TaskColumn from './TaskColumn';
-import { groupTasksByStatus } from '../functions/groupByStatus';
+import { groupTasksByStatus } from '../utils/groupByStatus';
 import { incrementTaskAssigned, incrementTaskCompleted, decrementTaskAssigned, decrementTaskCompleted } from '../state/staff/staffSlice';
 
 
