@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux'
 export default function AllTasksPageComponent() {
     const [searchText, setSearchText] = useState('');
     const { user } = useSelector((state) => state.auth)
-    console.log(user)
+    console.log(user.role)
 
     return (
     <div>

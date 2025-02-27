@@ -1,12 +1,13 @@
-'use client'
-import dynamic from "next/dynamic"
+'use client';
+import dynamic from 'next/dynamic';
 
-const AllTasksPage = dynamic(() => import ('./AllTasks'), {
+const AllTasksPage = dynamic(() => import('./AllTasks'), {
     ssr: false,
 })
 
-export default function AllTasks() {
+
+export default function AllTasks({words}){
     return (
-        <AllTasksPage/>
+    <AllTasksPage/>
     )
 }
