@@ -14,17 +14,17 @@ export default function LogInForm() {
     const [email, setEmail] = useState("")
     const [showWarning, setShowWarning] = useState(false)
     const registeredUsers = useSelector((state) => state.user)
-
+                                   
     async function handleLogin() {
         const user = registeredUsers.find((u) => u.useremail === email && u.role === role)
 
         if (user) {
             try {
                 const { token } = await loginUser(email, role)
-                dispatch(login({ email: user.email, role: user.role, token }));
+                dispatch(login({ email: user.useremail, role: user.role, token }));
                 router.push("/dashboard/alltasks")
             } catch (error) {
-                console.error(error)
+                console.error("route error", error)
                 setShowWarning(true)
             }
         } else {

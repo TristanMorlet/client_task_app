@@ -1,0 +1,16 @@
+services:
+    db:
+      image: postgres:latest
+      restart: always
+      environment:
+        POSTGRES_USER: tristan
+        POSTGRES_PASSWORD: morlet
+        POSTGRES_DB: taskdatabase
+      ports:
+        - "5432:5432"
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:

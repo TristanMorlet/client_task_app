@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask} from '../../state/tasks/taskSlice';
@@ -14,9 +15,9 @@ export default function PopUpForm({ status }) {
     const [tags, setTags] = useState([])
     const dispatch = useDispatch();
 
-    const availableTags = useSelector((state) => state.tags)
+    const availableTags = useSelector((state) => state.tags.tags)
     const staff = useSelector((state) => state.staff)
-
+    console.log(tags)
 
     function togglePopUp() {
         setFormOpen(!formOpen)
@@ -29,13 +30,12 @@ export default function PopUpForm({ status }) {
     }
 
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         
         if (!taskName.trim() || !deadline.trim()) return;
 
         const newTask = {
-            id: Date.now(),
             name: taskName,
             assignedTo,
             deadline,
@@ -44,14 +44,32 @@ export default function PopUpForm({ status }) {
             overdue: false,
         }
 
-        dispatch(addTask(newTask))
 
-        if (assignedTo !== "None") {
-            dispatch(assignTask( {staffName: assignedTo, taskId: newTask.id}))
+        try {
+            const response = await fetch('/api/taskAPIs/createTask', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newTask)
+            });
+
+            const dbTask = await response.json()
+            
+            console.log("New Task created in DB", dbTask)
+
+            dispatch(addTask(dbTask))
+
+            if (assignedTo !== "None") {
+                dispatch(assignTask({staffName: assignedTo, taskId: dbTask.id}))
+            }
+
+            togglePopUp()
+
+        } catch (error) {
+            console.error("Error creating task in db", error)
         }
 
-        console.log("New Task Created", newTask)
-        togglePopUp();
     }
     
     return (
@@ -127,13 +145,13 @@ export default function PopUpForm({ status }) {
                                                         if (e.target.checked) {
                                                         return ([...prevTags, tag]);
                                                     } else {
-                                                        return (prevTags.filter(t => t !== tag));
+                                                        return (prevTags.filter(t => t.id !== tag.id));
                                                     }
                                                 })
                                                 }}
                                                 className="mr-2"
                                             />
-                                            <label htmlFor={tag} className="text-gray-700">{tag}</label>
+                                            <label htmlFor={tag} className="text-gray-700">{tag.tagName}</label>
                                         </div>
                                     ))}
                                 </div>

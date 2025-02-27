@@ -8,7 +8,7 @@ export default function MoreInfoButton( {task} ) {
   
     const dispatch = useDispatch();
     const staff = useSelector((state) => state.staff)
-    const availableTags = useSelector((state) => state.tags)
+    const availableTags = useSelector((state) => state.tags.tags)
     const [newTags, setNewTags] = useState(task.tags || []);
 
 
@@ -30,6 +30,23 @@ export default function MoreInfoButton( {task} ) {
         dispatch(updateTask({taskId: task.id, property, value: newValue}))
     }
     function handleDelete() {
+        async function deleteDBTask(id) {
+            try { 
+                const res = await fetch(`/api/taskAPIs/${id}`, {
+                    method: "DELETE"
+                })
+                console.log(res)
+                if (!res.ok) {
+                    throw new Error("Failed to delete Task")
+                }
+
+                console.log("Task deleted")
+            } catch (err) {
+                console.error("Error deleting task", err)
+            }
+        }
+        deleteDBTask(task.id)
+
         dispatch(deleteTask(task.id))
         
         if (task.assignedTo !== "None") {
@@ -38,15 +55,13 @@ export default function MoreInfoButton( {task} ) {
     }
 
     function handleTagChange(tag) {
-        setNewTags((prevTags) => {
-            const updatedTags = prevTags.includes(tag) 
-            ? prevTags.filter(t => t !== tag)
-            : [...prevTags, tag]
+        
+        const updatedTags = newTags.includes(tag) 
+            ? newTags.filter(t => t !== tag)
+            : [...newTags, tag];
 
-            dispatch(updateTask({taskId: task.id, property: "tags", value: updatedTags}));
-
-            return updatedTags
-        })
+        setNewTags(updatedTags)
+        dispatch(updateTask({taskId: task.id, property: "tags", value: updatedTags}));
     };
     
   
@@ -83,12 +98,12 @@ export default function MoreInfoButton( {task} ) {
                             <div key={tag} className="flex items-center space-x-2">
                                 <input
                                     type="checkbox"
-                                    value={tag}
+                                    value={tag.tagName}
                                     checked={newTags.includes(tag)}
                                     onChange={() => handleTagChange(tag)}
                                     className="cursor-pointer"
                                 />
-                                <label>{tag}</label>
+                                <label>{tag.tagName}</label>
                             </div>
                         ))}
                     </div>

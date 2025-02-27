@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import MoreInfoButton from './Buttons/MoreInfoButton'
 import { useState } from 'react'

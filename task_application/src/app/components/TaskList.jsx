@@ -1,8 +1,10 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import TaskColumn from './TaskColumn';
 import { groupTasksByStatus } from '../utils/groupByStatus';
-import { incrementTaskAssigned, incrementTaskCompleted, decrementTaskAssigned, decrementTaskCompleted } from '../state/staff/staffSlice';
+import { setTasks } from '../state/tasks/taskSlice';
 
 
 export default function TaskList({searchText, role}) {
@@ -12,6 +14,24 @@ export default function TaskList({searchText, role}) {
     
     const dispatch = useDispatch()
     const tasks = useSelector((state) => state.tasks.tasks);
+
+    useEffect(() => {
+        async function fetchTasks() {
+
+        try {
+            const res = await fetch("/api/taskAPIs/getTasks");
+            const data = await res.json()
+            dispatch(setTasks(data))
+        } catch (err) {
+            console.error("Failed to Fetch Tasks", err)
+        }
+        }
+        fetchTasks();
+    }, [dispatch])
+
+
+
+
     const filters = useSelector((state) => {
         return state.tasks.filters;
     });

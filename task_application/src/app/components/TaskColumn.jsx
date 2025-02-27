@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Task from './Task';
 import { useDispatch, useSelector } from 'react-redux';
