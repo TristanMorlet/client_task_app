@@ -1,9 +1,10 @@
 'use client'
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilter, resetFilter } from '../state/tasks/taskSlice'
 import DateRangeSelector from './DateRangeSelector'
+import { setStaff } from '../state/staff/staffSlice'
 export default function Filter() {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.tasks.filters);
@@ -23,14 +24,16 @@ export default function Filter() {
 
     let updatedFilters = {...filters}
 
-    if (type === 'checkbox') {
-        if (name === "tags") {
-            updatedFilters.tags = checked
-                ? [...updatedFilters.tags, value]
-                : updatedFilters.tags.filter(tag => tag !== value);
+    if (type === 'checkbox' && name === "tags") {
+        updatedFilters.tags = [...filters.tags]
+
+        if (checked) {
+            updatedFilters.tags.push(Number(value))
         } else {
-            updatedFilters[name] = checked
+            updatedFilters.tags = updatedFilters.tags.filter(tag => tag !== Number(value));
         }
+    } else if (type === "checkbox") {
+            updatedFilters[name] = checked
     } else {
         updatedFilters[name] = value
     }
@@ -56,7 +59,20 @@ export default function Filter() {
     dispatch(resetFilter())
   }
 
-    const tags = useSelector((state) => state.tags)
+    const tags = useSelector((state) => state.tags.tags)
+    useEffect(() => {
+        async function fetchStaff() {
+        try {
+            const res = await fetch("/api/staffAPIs/getStaff");
+            const data = await res.json()
+            console.log("Staff retrieved", data)
+            dispatch(setStaff(data))
+        } catch (err) {
+            console.error("Failed to Fetch Staff", err)
+        }
+        }
+        fetchStaff();
+    }, [dispatch])
 
     const staff = useSelector((state) => state.staff)  
     console.log("List of Staff Available to Filter", staff)
@@ -94,7 +110,7 @@ export default function Filter() {
                                 onChange={handleFilterChange}
                             >
                                 {staff.map((member) => (
-                                    <option key={member.name} value={member.name}>
+                                    <option key={member.id} value={member.id}>
                                         {member.name}
                                     </option>
                                 ))}
@@ -117,16 +133,16 @@ export default function Filter() {
                             className="mt-2 space-y-2"
                         >
                         {tags.map((tag) => (
-                            <div key={tag} className="flex items-center space-x-2">
+                            <div key={tag.id} className="flex items-center space-x-2">
                                 <input
                                     type="checkbox"
                                     name="tags"
-                                    value={tag}
-                                    checked={filters.tags.includes(tag)}
+                                    value={tag.id}
+                                    checked={filters.tags.includes(tag.id)}
                                     onChange={handleFilterChange}
                                     className="cursor-pointer"
                                 />
-                                <label>{tag}</label>
+                                <label>{tag.tagName}</label>
                             </div>
 
                         ))}

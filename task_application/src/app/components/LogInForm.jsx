@@ -1,12 +1,15 @@
 'use client'
-
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../state/users/authSlice'
 import { useRouter } from 'next/navigation' 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { loginUser } from '../utils/authHelper'
+import { checkAuth } from '../state/users/authSlice'
+import { setStaff } from '../state/staff/staffSlice'
+import { setUsers } from '../state/users/userSlice'
 
-export default function LoginPage() {
+export default function LogInForm() {
     const dispatch = useDispatch()
     const router = useRouter()
     const [role, setRole] = useState(null)
@@ -14,13 +17,46 @@ export default function LoginPage() {
     const [showWarning, setShowWarning] = useState(false)
     const registeredUsers = useSelector((state) => state.user)
 
+    useEffect(() => {
+        async function fetchUsers() {
+        try {
+            const res = await fetch("/api/userAPIs/getUsers");
+            const data = await res.json()
+            console.log("Users retrieved", data)
+            dispatch(setUsers(data))
+        } catch (err) {
+            console.error("Failed to Fetch Users", err)
+        }
+        }
+        fetchUsers();
+    }, [dispatch])
 
-    function handleLogin() {
+    useEffect(() => {
+              async function fetchStaff() {
+                try {
+                    const res = await fetch("/api/staffAPIs/getStaff");
+                    const data = await res.json()
+                    console.log("Staff retrieved", data)
+                    dispatch(setStaff(data))
+                } catch (err) {
+                    console.error("Failed to Fetch Staff", err)
+                }
+              }
+              fetchStaff();
+          }, [dispatch])
+                                   
+    async function handleLogin() {
         const user = registeredUsers.find((u) => u.useremail === email && u.role === role)
 
         if (user) {
-            dispatch(login(user));
-            router.push("/dashboard/alltasks")
+            try {
+                const { token } = await loginUser(email, role)
+                dispatch(login({ email: user.useremail, role: user.role, id: user.id, token }));
+                router.push("/dashboard/alltasks")
+            } catch (error) {
+                console.error("route error", error)
+                setShowWarning(true)
+            }
         } else {
             setShowWarning(true)
             return;

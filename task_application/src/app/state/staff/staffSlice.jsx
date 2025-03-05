@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [
-    {name: "None", dateAdded: null, email: null, tasksAssigned: null, tasksCompleted: null, taskList: [], completeList: [],}
+    
 ]
 
 const staffSlice = createSlice({
@@ -12,15 +12,23 @@ const staffSlice = createSlice({
             state.push(action.payload)
         },
         deleteStaff: (state, action) => {
-            return state.filter(staff => staff.name !== action.payload)
+            return state.filter(staff => staff.id !== action.payload)
         },
+
+        setStaff: (state, action) => {
+            return action.payload
+        },
+
         setSort: (state, action) => {
             return action.payload
         },
 
         assignTask: (state, action) => {
-           const {staffName, taskId} = action.payload
-           const staffMember = state.find(staff => staff.name === staffName)
+           const {staffId, taskId} = action.payload
+           console.log(taskId)
+           const staffMember = state.find(staff => {
+            return staff.id == staffId})
+           console.log(staffMember)
 
            console.log("Staff Member being Assigned a Task", staffMember.name)
 
@@ -37,8 +45,8 @@ const staffSlice = createSlice({
         },
 
         unassignTask: (state, action) => {
-           const {staffName, taskId} = action.payload
-           const staffMember = state.find(staff => staff.name === staffName)
+           const {staffId, taskId} = action.payload
+           const staffMember = state.find(staff => staff.id == staffId)
 
            if (staffMember) {
              
@@ -49,8 +57,8 @@ const staffSlice = createSlice({
         },
 
         completeTask: (state, action) => {
-            const {staffName, taskId} = action.payload
-            const staffMember = state.find(staff => staff.name === staffName)
+            const {staffId, taskId} = action.payload
+            const staffMember = state.find(staff => staff.id == staffId)
 
             console.log("Staff Member completing a Task", staffMember.name)
 
@@ -71,5 +79,5 @@ const staffSlice = createSlice({
     },
 });
 
-export const { addStaff, deleteStaff, setSort, assignTask, unassignTask, completeTask, } = staffSlice.actions
+export const { addStaff, deleteStaff, setSort, assignTask, unassignTask, completeTask, setStaff} = staffSlice.actions
 export default staffSlice.reducer;

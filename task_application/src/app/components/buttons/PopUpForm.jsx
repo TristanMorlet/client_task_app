@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask} from '../../state/tasks/taskSlice';
@@ -5,19 +6,16 @@ import { assignTask } from '@/app/state/staff/staffSlice';
 
 
 
-
 export default function PopUpForm({ status }) {
     const [formOpen, setFormOpen] = useState(false);
     const [taskName, setTaskName] = useState("")
-    const [assignedTo, setAssignedTo] = useState("None")
+    const [assignedTo, setAssignedTo] = useState("1")
     const [deadline, setDeadline] = useState("")
     const [tags, setTags] = useState([])
     const dispatch = useDispatch();
-
-    const availableTags = useSelector((state) => state.tags)
+    const availableTags = useSelector((state) => state.tags.tags)
     const staff = useSelector((state) => state.staff)
-
-
+    console.log("Staff available to PopUp Form", staff)
     function togglePopUp() {
         setFormOpen(!formOpen)
         if (!formOpen) {
@@ -26,16 +24,16 @@ export default function PopUpForm({ status }) {
             setDeadline("");
             setTags([]);
           }
+          
     }
 
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         
         if (!taskName.trim() || !deadline.trim()) return;
 
         const newTask = {
-            id: Date.now(),
             name: taskName,
             assignedTo,
             deadline,
@@ -44,14 +42,54 @@ export default function PopUpForm({ status }) {
             overdue: false,
         }
 
-        dispatch(addTask(newTask))
 
-        if (assignedTo !== "None") {
-            dispatch(assignTask( {staffName: assignedTo, taskId: newTask.id}))
+        try {
+            const response = await fetch('/api/taskAPIs/createTask', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newTask)
+            });
+
+            const dbTask = await response.json()
+            
+            console.log("New Task created in DB", dbTask)
+
+            console.log("Assigned to of new task", dbTask.assignedTo)
+
+            dispatch(addTask(dbTask))
+
+            if (dbTask.assignedTo !== "1") {
+                const assignedStaff = staff.find(s => s.id == dbTask.assignedTo)
+                console.log(assignedStaff)
+                const updatedTaskList =  [...assignedStaff.taskList, dbTask.id]
+                const completeList = assignedStaff.completeList
+                const staffResponse = await fetch(`/api/staffAPIs/${dbTask.assignedTo}`, {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        taskList: updatedTaskList, 
+                        tasksAssigned: updatedTaskList.length + completeList.length,
+
+                    })
+                })
+
+                if (!staffResponse.ok){
+                    throw new Error({message: "Error updating task property"})
+                }
+
+                dispatch(assignTask({staffId: dbTask.assignedTo, taskId: dbTask.id}))
+            }
+
+            togglePopUp()
+
+        } catch (error) {
+            console.error("Error creating task in db", error)
         }
 
-        console.log("New Task Created", newTask)
-        togglePopUp();
     }
     
     return (
@@ -88,13 +126,17 @@ export default function PopUpForm({ status }) {
                                 <select 
                                     className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200"
                                     value={assignedTo}
-                                    onChange={(e) => setAssignedTo(e.target.value)}>
-                                    {staff.map((staff) => (
+                                    onChange={(e) => {
+                                    const selectedStaff = staff.find((s) => {
+                                    return s.id == e.target.value});
+                                    console.log(selectedStaff)
+                                    setAssignedTo(selectedStaff.id)}}>
+                                    {staff.map((staffMember) => (
                                         <option 
-                                            key={staff.name} 
-                                            value={staff.name}
+                                            key={staffMember.id} 
+                                            value={staffMember.id}
                                         >
-                                                {staff.name}
+                                                {staffMember.name}
                                         </option>
                                     ))}
                                 </select>
@@ -116,7 +158,7 @@ export default function PopUpForm({ status }) {
                                 <label htmlFor="tags" className="mb-4 text-gray-700 font-medium">Tags:</label>
                                 <div className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200">
                                     {availableTags.map((tag) => (
-                                        <div key={tag} className="flex items-center mb-2">
+                                        <div key={tag.id} className="flex items-center mb-2">
                                             <input
                                                 type="checkbox"
                                                 id={tag}
@@ -127,13 +169,13 @@ export default function PopUpForm({ status }) {
                                                         if (e.target.checked) {
                                                         return ([...prevTags, tag]);
                                                     } else {
-                                                        return (prevTags.filter(t => t !== tag));
+                                                        return (prevTags.filter(t => t.id !== tag.id));
                                                     }
                                                 })
                                                 }}
                                                 className="mr-2"
                                             />
-                                            <label htmlFor={tag} className="text-gray-700">{tag}</label>
+                                            <label htmlFor={tag} className="text-gray-700">{tag.tagName}</label>
                                         </div>
                                     ))}
                                 </div>

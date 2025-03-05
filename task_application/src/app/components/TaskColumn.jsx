@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Task from './Task';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +27,7 @@ export default function TaskColumn({title, tasks, role}) {
                  }`}
             >
                 {tasks.length > 0 ? (
-                    tasks.map((task) => <Task key={task.id} task={task} />)
+                    tasks.map((task) => <Task key={task.id} task={task} role={role} />)
                 ) : (
                     <p className="text-gray-400 text-sm text-center">No tasks in {title}</p>
                 )}

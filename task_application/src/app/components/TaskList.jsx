@@ -1,8 +1,10 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import TaskColumn from './TaskColumn';
-import { groupTasksByStatus } from '../functions/groupByStatus';
-import { incrementTaskAssigned, incrementTaskCompleted, decrementTaskAssigned, decrementTaskCompleted } from '../state/staff/staffSlice';
+import { groupTasksByStatus } from '../utils/groupByStatus';
+import { setTasks } from '../state/tasks/taskSlice';
 
 
 export default function TaskList({searchText, role}) {
@@ -12,6 +14,25 @@ export default function TaskList({searchText, role}) {
     
     const dispatch = useDispatch()
     const tasks = useSelector((state) => state.tasks.tasks);
+
+    useEffect(() => {
+        async function fetchTasks() {
+
+        try {
+            const res = await fetch("/api/taskAPIs/getTasks");
+            const data = await res.json()
+            console.log(data)
+            dispatch(setTasks(data))
+        } catch (err) {
+            console.error("Failed to Fetch Tasks", err)
+        }
+        }
+        fetchTasks();
+    }, [dispatch])
+
+
+
+
     const filters = useSelector((state) => {
         return state.tasks.filters;
     });
@@ -23,7 +44,10 @@ export default function TaskList({searchText, role}) {
 
         const matchesAssignedTo = filters.assignedTo.length === 0 || filters.assignedTo.includes(task.assignedTo);
 
-        const matchesTags = filters.tags.length === 0 || task.tags.some((tag) => filters.tags.includes(tag));
+        const matchesTags = filters.tags.length === 0 || task.tags.some((tag) => {
+            console.log(tag)
+            return filters.tags.includes(tag.id)
+        });
 
         const matchesDateAdded = filters.dateAdded === null || task.dateAdded === filters.dateAdded;
 
@@ -32,7 +56,7 @@ export default function TaskList({searchText, role}) {
         const matchesDateRange = filters.dateRange && filters.dateRange.length === 2
             ? tasks.some(task => {
 
-                const taskDate = new Date(task.id).getTime()
+                const taskDate = new Date(task.createdAt).getTime()
                 console.log(taskDate)
                 const startDate = new Date(filters.dateRange[0]).getTime()
                 console.log(startDate)
@@ -49,6 +73,7 @@ export default function TaskList({searchText, role}) {
 
 
     const groupedTasks = groupTasksByStatus(filteredTasks);
+    console.log(groupedTasks)
     const defaultTaskLists = [TODO, STARTED, FINISHED];
   
     return (

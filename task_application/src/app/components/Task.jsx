@@ -1,7 +1,8 @@
+'use client'
 import React from 'react'
 import MoreInfoButton from './Buttons/MoreInfoButton'
 import { useState } from 'react'
-export default function Task( {task}) {
+export default function Task( {task, role}) {
   
   const [infoOpen, setInfoOpen] = useState(false);
 
@@ -17,12 +18,12 @@ export default function Task( {task}) {
       <div className="flex justify-between items-center">
         <h3 className={`font-semibold ${task.overdue ? "text-red-500" : "text-black"}`}>{task.name}</h3>
         <button 
-            className="font-bold text-lg mb-1"
+            className="font-bold text-lg mb-1 px-4"
             onClick={handleToggleInfo}>
                 ...
             </button>
       </div>
-      {infoOpen && <MoreInfoButton task={task} />}
+      {infoOpen && <MoreInfoButton task={task} role={role} />}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import React, {useState} from 'react'
 import { useDispatch } from 'react-redux'
 import { addStaff } from '@/app/state/staff/staffSlice'
+import { addUser } from '@/app/state/users/userSlice'
 
 export default function AddStaff() {
   
@@ -19,24 +20,62 @@ export default function AddStaff() {
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
 
     if (!staffName.trim() || !staffEmail.trim()) return;
-
-    const newStaff = {
-      name: staffName,
-      dateAdded: Date.now(),
-      email: staffEmail,
-      tasksAssigned: 0,
-      tasksCompleted: 0,
-      taskList: [],
-      completeList: [],
+    
+    const createdUser = {
+      useremail: staffEmail,
+      role: "staff",
     }
-    dispatch(addStaff(newStaff));
-    console.log("New Staff Member Created", newStaff)
-    togglePopUp();
+
+
+    try {
+        const userResponse = await fetch('/api/userAPIs/createUser', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(createdUser)
+        });
+
+        const dbUser = await userResponse.json()
+        
+        console.log("New User created in DB", dbUser)
+
+        const newStaff = {
+          name: staffName,
+          role: "staff",
+          dateAdded: Date.now(),
+          email: staffEmail,
+          tasksAssigned: 0,
+          tasksCompleted: 0,
+          taskList: [],
+          completeList: [],
+          userId: dbUser.id,
+        }
+
+        const staffResponse = await fetch('/api/staffAPIs/createStaff', {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newStaff)
+        })
+
+
+        const dbStaff = await staffResponse.json()
+        console.log("New Staff created in DB", dbStaff)
+        dispatch(addStaff(dbStaff))
+        dispatch(addUser(dbUser))
+
+        togglePopUp()
+
+    } catch (error) {
+        console.error("Error creating staff/user in db", error)
+    }
   }
   
   
