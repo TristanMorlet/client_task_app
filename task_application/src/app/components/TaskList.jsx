@@ -21,6 +21,7 @@ export default function TaskList({searchText, role}) {
         try {
             const res = await fetch("/api/taskAPIs/getTasks");
             const data = await res.json()
+            console.log(data)
             dispatch(setTasks(data))
         } catch (err) {
             console.error("Failed to Fetch Tasks", err)
@@ -43,7 +44,10 @@ export default function TaskList({searchText, role}) {
 
         const matchesAssignedTo = filters.assignedTo.length === 0 || filters.assignedTo.includes(task.assignedTo);
 
-        const matchesTags = filters.tags.length === 0 || task.tags.some((tag) => filters.tags.includes(tag));
+        const matchesTags = filters.tags.length === 0 || task.tags.some((tag) => {
+            console.log(tag)
+            return filters.tags.includes(tag.id)
+        });
 
         const matchesDateAdded = filters.dateAdded === null || task.dateAdded === filters.dateAdded;
 
@@ -52,7 +56,7 @@ export default function TaskList({searchText, role}) {
         const matchesDateRange = filters.dateRange && filters.dateRange.length === 2
             ? tasks.some(task => {
 
-                const taskDate = new Date(task.id).getTime()
+                const taskDate = new Date(task.createdAt).getTime()
                 console.log(taskDate)
                 const startDate = new Date(filters.dateRange[0]).getTime()
                 console.log(startDate)
@@ -69,6 +73,7 @@ export default function TaskList({searchText, role}) {
 
 
     const groupedTasks = groupTasksByStatus(filteredTasks);
+    console.log(groupedTasks)
     const defaultTaskLists = [TODO, STARTED, FINISHED];
   
     return (

@@ -31,8 +31,8 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            const { email, role, token } = action.payload
-            state.user = { email, role}
+            const { email, role, token, id } = action.payload
+            state.user = { email, role, id}
             state.token = token
             state.isAuthenticated = true;
             localStorage.setItem("jwt", token)

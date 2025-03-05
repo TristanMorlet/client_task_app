@@ -15,7 +15,7 @@ export default function TagsList( {role} ) {
   console.log("Tags available to TagsList component", tags)
 
   const groupedTasksbyTags = groupTasksByTags(tasks);
-  console.log("Length of the list of Tags", tags.length)
+  console.log("grouped tasks by tags", groupedTasksbyTags)
 
   const dispatch = useDispatch();
   
@@ -35,8 +35,8 @@ export default function TagsList( {role} ) {
   return (
     <div className="flex items-center justify-start">
       <div className='grid grid-flow-col auto-cols-max gap-4 p-5 overflow-x-auto'>
-          {tags.map((tag, index) => (
-              <TagsColumn key={index} tagName={tag.tagName} tagId={tag.id} tasks={groupedTasksbyTags[tag] || []} />
+          {tags.map((tag) => (
+              <TagsColumn key={tag.id} tagName={tag.tagName} tagId={tag.id} tasks={groupedTasksbyTags[tag.tagName] || []} role={role} />
           ))}
       </div>
       {role === "worklead" && (

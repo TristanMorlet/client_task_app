@@ -2,6 +2,8 @@ import { Sequelize, Options, Op} from 'sequelize'
 import pg from 'pg'
 import { TaskModel } from "./task";
 import { TagsModel } from './tags';
+import { StaffModel } from './staff';
+import { UserModel } from './users';
 
 
 function makeConfig() {
@@ -38,8 +40,16 @@ const db = {
   sequelize,
   Sequelize,
   Task: TaskModel(sequelize, Sequelize.DataTypes),
-  Tag: TagsModel(sequelize, Sequelize.DataTypes)
+  Tag: TagsModel(sequelize, Sequelize.DataTypes),
+  Staff: StaffModel(sequelize, Sequelize.DataTypes),
+  Users: UserModel(sequelize, Sequelize.DataTypes)
 }
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db)
+  }
+})
 
 
 export default db;

@@ -18,20 +18,26 @@ export default function AllTasksPageComponent() {
 
     return (
     <div>
-        <Tabs setSearch={setSearchText} role={user.role} />
-        <div className="flex flex-col h-screen"> 
-            <div className="flex justify-between items-center px-5 py-3 m-3">
-                <div>
-                    <h1 className="font-bold text-4xl">Tasks</h1>
+        <div className="flex flex-col h-screen">
+            <Tabs setSearch={setSearchText} role={user.role} />
+            <div className="flex-grow overflow-auto">
+                <div className="flex justify-between items-center px-5 py-3 m-3">
+                    <div>
+                        <h1 className="font-bold text-4xl">Tasks</h1>
+                    </div>
+                    <Filter/>
                 </div>
-                <Filter/>
+                <TaskList searchText={searchText} role={user.role}/>
+                <div className="flex justify-between items-center px-5 py-3 m-3">
+                    <h1 className="font-bold text-4xl">Tags</h1>
+                </div>
+                <div className="mb-20">
+                    <TagsList role={user.role} />
+                </div>
+                <div className='mt-auto'>
+                    <ProgressBar page="alltasks" user={user}/>
+                </div>
             </div>
-            <TaskList searchText={searchText} role={user.role}/>
-            <div className="flex justify-between items-center px-5 py-3 m-3">
-                <h1 className="font-bold text-4xl">Tags</h1>
-            </div>
-            <TagsList role={user.role} />
-            <ProgressBar page="alltasks" role={user.role}/>
         </div>
     </div>
   )

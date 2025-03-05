@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleListView } from '../state/tasks/tagListSlice';
 import Task from './Task';
 import { deleteTag } from '../state/tasks/tagSlice';
-export default function TagsColumn({tagName, tagId, tasks}) {
+export default function TagsColumn({tagName, tagId, tasks, role}) {
 
     const dispatch = useDispatch();
     
@@ -52,7 +52,7 @@ export default function TagsColumn({tagName, tagId, tasks}) {
                 }`}
         >
             {tasks.length > 0 ? (
-                tasks.map((task) => <Task key={task.id} task={task} />)
+                tasks.map((task) => <Task key={task.id} task={task} role={role} />)
             ) : (
                 <p className="text-gray-400 text-sm text-center">No tasks in {tagName}</p>
             )}

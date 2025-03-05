@@ -32,7 +32,10 @@ const taskSlice = createSlice({
             state.tasks = action.payload
         },
         setFilter: (state, action) => {
-            state.filters = {...state.filters, ...action.payload}
+            return {
+                ...state,
+                filters: {...state.filters, ...action.payload}
+            }
         },
         resetFilter: (state) => {
             state.filters = initialState.filters

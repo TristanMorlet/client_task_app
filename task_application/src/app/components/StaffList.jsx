@@ -1,14 +1,47 @@
 'use client'
 
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, {useEffect} from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import RemoveStaff from './Buttons/RemoveStaff'
 import ProgressBar from './ProgressBar'
+import {setStaff} from '../state/staff/staffSlice'
+import { setUsers } from '../state/users/userSlice'
+
 export default function StaffList( {page, searchText, dateRange} ) {
     const staff = useSelector((state) => state.staff)
     const tasks = useSelector((state) => state.tasks.tasks)
+    const dispatch = useDispatch()
     console.log("Staff List available to staffList", staff)
 
+    useEffect(() => {
+        async function fetchUsers() {
+        try {
+            const res = await fetch("/api/userAPIs/getUsers");
+            const data = await res.json()
+            console.log("Users retrieved", data)
+            dispatch(setUsers(data))
+        } catch (err) {
+            console.error("Failed to Fetch Users", err)
+        }
+        }
+        fetchUsers();
+    }, [dispatch])
+
+    useEffect(() => {
+          async function fetchStaff() {
+            try {
+                const res = await fetch("/api/staffAPIs/getStaff");
+                const data = await res.json()
+                console.log("Staff retrieved", data)
+                dispatch(setStaff(data))
+            } catch (err) {
+                console.error("Failed to Fetch Staff", err)
+            }
+          }
+          fetchStaff();
+      }, [dispatch])
+
+    
     const filterStaff = staff.filter((staff) => {
         const matchesSearchText = staff.name.toLowerCase().includes(searchText.toLowerCase());
         return matchesSearchText

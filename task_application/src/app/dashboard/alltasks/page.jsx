@@ -6,7 +6,7 @@ const AllTasksPage = dynamic(() => import('./AllTasks'), {
 })
 
 
-export default function AllTasks({words}){
+export default function AllTasks(){
     return (
     <AllTasksPage/>
     )

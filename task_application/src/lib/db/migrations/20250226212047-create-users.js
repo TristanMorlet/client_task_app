@@ -2,31 +2,19 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Tasks', {
+    await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
+      useremail: {
+        type: Sequelize.STRING,
+        unique: true
       },
-      assignedTo: {
-        type: Sequelize.STRING
-      },
-      status: {
-        type: Sequelize.ENUM("To-Do", "Started", "Finished"),
-        defaultValue: "To-Do"
-      },
-      tags: {
-        type: Sequelize.ARRAY(Sequelize.JSONB)
-      },
-      overdue: {
-        type: Sequelize.BOOLEAN
-      },
-      deadline: {
-        type: Sequelize.DATEONLY
+      role: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +27,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Tasks');
+    await queryInterface.dropTable('Users');
   }
 };

@@ -6,19 +6,16 @@ import { assignTask } from '@/app/state/staff/staffSlice';
 
 
 
-
 export default function PopUpForm({ status }) {
     const [formOpen, setFormOpen] = useState(false);
     const [taskName, setTaskName] = useState("")
-    const [assignedTo, setAssignedTo] = useState("None")
+    const [assignedTo, setAssignedTo] = useState("1")
     const [deadline, setDeadline] = useState("")
     const [tags, setTags] = useState([])
     const dispatch = useDispatch();
-
     const availableTags = useSelector((state) => state.tags.tags)
     const staff = useSelector((state) => state.staff)
-    console.log(tags)
-
+    console.log("Staff available to PopUp Form", staff)
     function togglePopUp() {
         setFormOpen(!formOpen)
         if (!formOpen) {
@@ -27,6 +24,7 @@ export default function PopUpForm({ status }) {
             setDeadline("");
             setTags([]);
           }
+          
     }
 
 
@@ -58,10 +56,32 @@ export default function PopUpForm({ status }) {
             
             console.log("New Task created in DB", dbTask)
 
+            console.log("Assigned to of new task", dbTask.assignedTo)
+
             dispatch(addTask(dbTask))
 
-            if (assignedTo !== "None") {
-                dispatch(assignTask({staffName: assignedTo, taskId: dbTask.id}))
+            if (dbTask.assignedTo !== "1") {
+                const assignedStaff = staff.find(s => s.id == dbTask.assignedTo)
+                console.log(assignedStaff)
+                const updatedTaskList =  [...assignedStaff.taskList, dbTask.id]
+                const completeList = assignedStaff.completeList
+                const staffResponse = await fetch(`/api/staffAPIs/${dbTask.assignedTo}`, {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        taskList: updatedTaskList, 
+                        tasksAssigned: updatedTaskList.length + completeList.length,
+
+                    })
+                })
+
+                if (!staffResponse.ok){
+                    throw new Error({message: "Error updating task property"})
+                }
+
+                dispatch(assignTask({staffId: dbTask.assignedTo, taskId: dbTask.id}))
             }
 
             togglePopUp()
@@ -106,13 +126,17 @@ export default function PopUpForm({ status }) {
                                 <select 
                                     className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200"
                                     value={assignedTo}
-                                    onChange={(e) => setAssignedTo(e.target.value)}>
-                                    {staff.map((staff) => (
+                                    onChange={(e) => {
+                                    const selectedStaff = staff.find((s) => {
+                                    return s.id == e.target.value});
+                                    console.log(selectedStaff)
+                                    setAssignedTo(selectedStaff.id)}}>
+                                    {staff.map((staffMember) => (
                                         <option 
-                                            key={staff.name} 
-                                            value={staff.name}
+                                            key={staffMember.id} 
+                                            value={staffMember.id}
                                         >
-                                                {staff.name}
+                                                {staffMember.name}
                                         </option>
                                     ))}
                                 </select>
@@ -134,7 +158,7 @@ export default function PopUpForm({ status }) {
                                 <label htmlFor="tags" className="mb-4 text-gray-700 font-medium">Tags:</label>
                                 <div className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200">
                                     {availableTags.map((tag) => (
-                                        <div key={tag} className="flex items-center mb-2">
+                                        <div key={tag.id} className="flex items-center mb-2">
                                             <input
                                                 type="checkbox"
                                                 id={tag}

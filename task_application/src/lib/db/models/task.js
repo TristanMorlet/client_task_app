@@ -18,12 +18,12 @@ export const TaskModel = (sequelize, DataTypes) => {
       type: DataTypes.ENUM("To-Do", "Started", "Finished"), 
       defaultValue: "To-Do",
     },
-    tags: DataTypes.ARRAY(DataTypes.STRING),
+    tags: DataTypes.ARRAY(DataTypes.JSONB),
     overdue: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    deadline: DataTypes.DATE
+    deadline: DataTypes.DATEONLY
   }, {
     sequelize,
     modelName: 'Task',

@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { loginUser } from '../utils/authHelper'
 import { checkAuth } from '../state/users/authSlice'
+import { setStaff } from '../state/staff/staffSlice'
+import { setUsers } from '../state/users/userSlice'
 
 export default function LogInForm() {
     const dispatch = useDispatch()
@@ -14,6 +16,34 @@ export default function LogInForm() {
     const [email, setEmail] = useState("")
     const [showWarning, setShowWarning] = useState(false)
     const registeredUsers = useSelector((state) => state.user)
+
+    useEffect(() => {
+        async function fetchUsers() {
+        try {
+            const res = await fetch("/api/userAPIs/getUsers");
+            const data = await res.json()
+            console.log("Users retrieved", data)
+            dispatch(setUsers(data))
+        } catch (err) {
+            console.error("Failed to Fetch Users", err)
+        }
+        }
+        fetchUsers();
+    }, [dispatch])
+
+    useEffect(() => {
+              async function fetchStaff() {
+                try {
+                    const res = await fetch("/api/staffAPIs/getStaff");
+                    const data = await res.json()
+                    console.log("Staff retrieved", data)
+                    dispatch(setStaff(data))
+                } catch (err) {
+                    console.error("Failed to Fetch Staff", err)
+                }
+              }
+              fetchStaff();
+          }, [dispatch])
                                    
     async function handleLogin() {
         const user = registeredUsers.find((u) => u.useremail === email && u.role === role)
@@ -21,7 +51,7 @@ export default function LogInForm() {
         if (user) {
             try {
                 const { token } = await loginUser(email, role)
-                dispatch(login({ email: user.useremail, role: user.role, token }));
+                dispatch(login({ email: user.useremail, role: user.role, id: user.id, token }));
                 router.push("/dashboard/alltasks")
             } catch (error) {
                 console.error("route error", error)
