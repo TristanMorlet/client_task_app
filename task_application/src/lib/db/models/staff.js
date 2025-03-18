@@ -18,7 +18,7 @@ export const StaffModel = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "Users",
         key: "id"

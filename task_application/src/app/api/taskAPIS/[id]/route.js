@@ -1,4 +1,3 @@
-import { Next } from "react-bootstrap/esm/PageItem";
 import db from "../../../../lib/db/models";
 import { NextResponse } from "next/server";
 
@@ -42,8 +41,8 @@ export async function PATCH(req, { params }){
         await task.save()
 
         return new NextResponse(JSON.stringify({message: "Task updated successfully"}), {status: 200})
-    } catch (err) {
-        console.error("Error updating task", err)
-        return new NextResponse(JSON.stringify({message: "Error updating task", err}), {status: 500})
+    } catch (error) {
+        console.error("Error updating task", error)
+        return new NextResponse(JSON.stringify({error: "Error updating task"}), {status: 500})
     }
 }

@@ -13,7 +13,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       assignedTo: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: true
       },
       status: {
         type: Sequelize.ENUM("To-Do", "Started", "Finished"),
@@ -26,7 +27,7 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       deadline: {
-        type: Sequelize.DATEONLY
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

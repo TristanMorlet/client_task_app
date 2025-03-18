@@ -57,7 +57,7 @@ export default function TagsPopUp() {
           {formOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
 
-              <div className="bg-white p-6 rounded-lg w-1/5 shadow-lg">
+              <div className="bg-white p-6 rounded-lg w-3/5 md:w-1/5 shadow-lg">
                 <h2 className="text-xl font-bold mb-5 text-center"> New Tag </h2>
 
                 <form>
@@ -72,7 +72,7 @@ export default function TagsPopUp() {
                         className="w-full p-2 border border-gray-300 rounded focuss:ring focus:border-gray-200" 
                     />
                 </div>
-                <div className="p-2 flex justify-end space-x-3 mt-6">
+                <div className="p-2 flex justify-end space-x-3 mt-6 w-11/12 md:w-11/12">
                     <button
                         onClick={handleSubmit}
                         className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition"

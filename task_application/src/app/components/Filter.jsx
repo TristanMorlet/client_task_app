@@ -56,6 +56,13 @@ export default function Filter() {
     setDropDownOpen(prev => ({ ...prev, [name]: !prev[name] }));
   }
   function handleReset(){
+    setDropDownOpen({
+        assignedTo: false,
+        tags: false,
+        overdue: false,
+        filter: true,
+    })
+    dispatch(setFilter({ dateRange: null }))
     dispatch(resetFilter())
   }
 
@@ -109,6 +116,11 @@ export default function Filter() {
                                 className="border border-gray-300 rounded px-2 py-1"
                                 onChange={handleFilterChange}
                             >
+                                <option
+                                value = {null}
+                                >
+                                    None
+                                </option>
                                 {staff.map((member) => (
                                     <option key={member.id} value={member.id}>
                                         {member.name}

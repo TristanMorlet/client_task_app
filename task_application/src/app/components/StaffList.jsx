@@ -7,7 +7,7 @@ import ProgressBar from './ProgressBar'
 import {setStaff} from '../state/staff/staffSlice'
 import { setUsers } from '../state/users/userSlice'
 
-export default function StaffList( {page, searchText, dateRange} ) {
+export default function StaffList( {page, searchText, dateRange, user} ) {
     const staff = useSelector((state) => state.staff)
     const tasks = useSelector((state) => state.tasks.tasks)
     const dispatch = useDispatch()
@@ -79,28 +79,28 @@ export default function StaffList( {page, searchText, dateRange} ) {
   
     return (
     <div className="flex-row space-y-4 py-4 px-9">
-        {processedStaff.filter(member => member.name !== "None").map((member, index) => (
-            <div key={index}>
+        {processedStaff.map((member) => (
+            <div key={member.id}>
                 
-                <h1 className="text-bold text-xl"> {member.name} </h1>
+                <h1 className="text-bold text-md md:text-xl"> {member.name} </h1>
                 <div className="flex justify-between items-center text-gray-500">
                 {page === 'staff' && (
                     <>
-                    <div className="px-4 py-1">
-                        <p>Date Added: {new Date(member.dateAdded).toLocaleDateString()}</p>
+                    <div className="px-4 py-1 text-xs md:text-base">
+                        <p>Date Added: {new Date(member.dateAdded).toLocaleDateString("en-GB")}</p>
                         <p>Email: {member.email}</p>
                     </div>
-                        <RemoveStaff key={index} member={member} />
+                        <RemoveStaff key={member.id} member={member} />
                     </>
                         )} 
                 {page === 'metrics' && (
                     <>
-                    <div className="px-4 py-1">
+                    <div className="px-4 py-1 text-xs md:text-base">
                         <p>Tasks Assigned: {member.tasksAssigned}</p>
                         <p>Tasks Completed: {member.tasksCompleted}</p>
                     </div>
                     <div className="px-4 py-1">
-                        <ProgressBar page="metrics" member={member}/>
+                        <ProgressBar page="metrics" member={member} user={user} />
                     </div>
                     
                     </>

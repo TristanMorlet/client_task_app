@@ -3,7 +3,8 @@ import React, {useState} from 'react'
 import { formatDate } from '../../utils/formateDate'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTask, deleteTask } from '../../state/tasks/taskSlice';
-import { assignTask, unassignTask, completeTask } from '@/app/state/staff/staffSlice';
+import { assignTask, unassignTask, completeTask, uncompleteTask } from '@/app/state/staff/staffSlice';
+
 export default function MoreInfoButton( {task, role} ) {
   
     const dispatch = useDispatch();
@@ -18,56 +19,104 @@ export default function MoreInfoButton( {task, role} ) {
     async function handlePropertyChange(property, newValue) {
 
         console.log(property)
-        if (property === "assignedTo" && task.assignedTo !== newValue){
-            if (task.assignedTo !== "1") {
-                try{
-                    const assignedStaff = staff.find(s => s.id == task.assignedTo)
-                    const updatedTaskList = assignedStaff.taskList.filter(taskId => {
-                        console.log(taskId, task.id)
-                        return taskId !== task.id
-                })
-                    const completeList = assignedStaff.completeList
 
-                    console.log(updatedTaskList)
-                    const staffResponse = await fetch(`/api/staffAPIs/${task.assignedTo}`, {
-                        method: "PATCH",
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            taskList: updatedTaskList, 
-                            tasksAssigned: updatedTaskList.length + completeList.length
+        if (property === "assignedTo" && task.assignedTo !== newValue){
+                try {
+                    if (task.assignedTo !== "None"){
+
+                        if (task.status === "Finished") {
+                            const assignedStaff = staff.find(s => s.id == task.assignedTo)
+                            const updatedCompleteList = assignedStaff.completeList.filter(taskId => {
+                            console.log(taskId, task.id)
+                            return taskId !== task.id
+                            })
+
+                        const taskList = assignedStaff.taskList
+
+                        
+
+                        const staffResponse = await fetch(`/api/staffAPIs/${task.assignedTo}`, {
+                            method: "PATCH",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                taskList: taskList, 
+                                tasksAssigned: taskList.length + updatedCompleteList.length,
+                                completeList: updatedCompleteList
+                            })
                         })
-                    })
-                    console.log(staffResponse.json())
-                    dispatch(unassignTask({ staffId: task.assignedTo, taskId: task.id }))
+
+                        dispatch(unassignTask({ staffId: task.assignedTo, taskId: task.id }))
+                        } else {
+                            const assignedStaff = staff.find(s => s.id == task.assignedTo)
+                            const updatedTaskList = assignedStaff.taskList.filter(taskId => {
+                            console.log(taskId, task.id)
+                            return taskId !== task.id
+                            })
+
+                            const completeList = assignedStaff.completeList
+
+                            
+
+                            console.log(updatedTaskList)
+                            const staffResponse = await fetch(`/api/staffAPIs/${task.assignedTo}`, {
+                                method: "PATCH",
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ 
+                                    taskList: updatedTaskList, 
+                                    tasksAssigned: updatedTaskList.length + completeList.length,
+                                    completeList: completeList
+                                })
+                            })
+
+                            dispatch(unassignTask({ staffId: task.assignedTo, taskId: task.id }))
+                        }
+                   
+                    }
+                    if (task.status === "Finished"){
+                        const assignedStaff = staff.find(s => s.id == newValue)
+
+                        const updatedCompleteList = [...assignedStaff.completeList, task.id]
+                        const taskList = assignedStaff.taskList
+                        const staffResponse = await fetch(`/api/staffAPIs/${newValue}`, {
+                            method: "PATCH",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                completeList: updatedCompleteList,
+                                tasksAssigned: taskList.length + updatedCompleteList.length
+                        })
+                    })} else {
+                        const assignedStaff = staff.find(s => s.id == newValue)
+
+                        const updatedTaskList = [...assignedStaff.taskList, task.id]
+                        const completeList = assignedStaff.completeList
+                        const staffResponse = await fetch(`/api/staffAPIs/${newValue}`, {
+                            method: "PATCH",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                taskList: updatedTaskList,
+                                tasksAssigned: updatedTaskList.length + completeList.length
+
+                        })
+                    })}
+
+
+                    dispatch(assignTask({ staffId: newValue, taskId: task.id, taskStatus: task.status }))
+
+
                 } catch (err) {
+
                     console.error("Error unassigning task in DB", err)
                 }
-            } 
-            if (newValue !== "1") {
-                try{
-                    console.log(newValue)
-                    const assignedStaff = staff.find(s => s.id == newValue)
-                    const updatedTaskList = [...assignedStaff.taskList, task.id]
-                    const completeList = assignedStaff.completeList
-                    const staffResponse = await fetch(`/api/staffAPIs/${newValue}`, {
-                        method: "PATCH",
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            taskList: updatedTaskList,
-                            tasksAssigned: updatedTaskList.length + completeList.length
-
-                        })
-                    })
-                    dispatch(assignTask({ staffId: newValue, taskId: task.id }))
-                } catch (err) {
-                    console.error("Error updating taskList in db", err)
-                }
-            }
         }
+
         if (property === "status" && newValue === "Finished" && task.status !== "Finished"){
 
             try {
@@ -86,13 +135,52 @@ export default function MoreInfoButton( {task, role} ) {
                         tasksCompleted: updatedCompleteList.length
                     },)
                 })
+
                 dispatch(completeTask({ staffId: task.assignedTo, taskId: task.id }))
 
+                const taskResponse = await fetch(`/api/taskAPIs/${task.id}`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ overdue: false })
+                    })
+    
+                    dispatch(updateTask({ taskId: task.id, property: 'overdue', value: false }))
+                
+            } catch (err) {
+
+                console.error("Error updating complete list in db")
+
+            }
+        }
+        if (property === "status" && (newValue === "To-Do" || newValue === "Started") && task.status === "Finished"){
+            try {
+                const assignedStaff = staff.find(s => s.id == task.assignedTo)
+                const updatedCompleteList = assignedStaff.completeList.filter(taskId => taskId !== task.id)
+                const updatedTaskList = [...assignedStaff.taskList, task.id]
+                const staffResponse = await fetch(`/api/staffAPIs/${task.assignedTo}`, {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        completeList: updatedCompleteList,
+                        taskList: updatedTaskList,
+                        tasksAssigned: updatedTaskList.length + updatedCompleteList.length,
+                        tasksCompleted: updatedCompleteList.length
+                    },)
+                })
+
+                dispatch(uncompleteTask({ staffId: task.assignedTo, taskId: task.id }))
             } catch (err) {
                 console.error("Error updating complete list in db")
             }
         }
-    
+
+
+
+
         try {
             console.log(property)
             console.log(newValue)
@@ -105,8 +193,11 @@ export default function MoreInfoButton( {task, role} ) {
             })
 
             dispatch(updateTask({taskId: task.id, property, value: newValue}))
+
         } catch (err) {
+
             console.error("Error updating task property in DB", err)
+
         }
     }
     async function handleDelete() {
@@ -128,9 +219,8 @@ export default function MoreInfoButton( {task, role} ) {
         deleteDBTask(task.id)
 
         dispatch(deleteTask(task.id))
-        
-        if (task.assignedTo !== "1") {
-            try{
+        if (task.assignedTo !== "None"){
+            try {
                 const assignedStaff = staff.find(s => s.id == task.assignedTo)
                 const updatedTaskList = assignedStaff.taskList.filter(taskId => taskId !== task.id)
                 const staffResponse = await fetch(`/api/staffAPIs/${task.assignedTo}`, {
@@ -144,7 +234,7 @@ export default function MoreInfoButton( {task, role} ) {
             } catch (err) {
                 console.error("Error unassigning task in DB", err)
             }
-        };
+        }
     }
 
     function handleTagChange(tag) {
@@ -172,6 +262,9 @@ export default function MoreInfoButton( {task, role} ) {
                                 onChange={(e) => handlePropertyChange("assignedTo", e.target.value)}
                                 className="p-1 border border-gray-300 rounded-md focus:border-gray-200"
                             >
+                                {task.assignedTo === "None" && (
+                                    <option value={null}> None </option>
+                                )}
                                 {staff.map(staff => (
                                     <option key={staff.id} value={staff.id}>{staff.name}</option>
                                 ))}
@@ -181,6 +274,9 @@ export default function MoreInfoButton( {task, role} ) {
                         {role === "staff" && (
                             <>
                             <h4 className="font-semibold">Assigned To</h4>
+                            {task.assignedTo === "None" && (
+                                <p className="px-4 py-1 border border-gray-300 rounded-md focus:border-gray-200"> None </p>
+                            )}
                             <p className="px-4 py-1 border border-gray-300 rounded-md focus:border-gray-200"> {staffMember.name} </p>
                             </>
                         )}

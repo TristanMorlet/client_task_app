@@ -16,7 +16,7 @@ export default function TaskColumn({title, tasks, role}) {
     return (
         <div className="p-4 flex flex-col bg-gray-50 rounded-lg border border-gray-300 h-fit">
             <h4 
-                className="text-lg font-semibold p-3 border-b cursor-pointer flex justify-between items-center"
+                className="text-sm md:text-lg font-semibold p-3 border-b cursor-pointer flex justify-between items-center"
                 onClick={handleToggleListView}>
                     {title}
                     <span>{openLists[title] ? "▲" : "▼"}</span>

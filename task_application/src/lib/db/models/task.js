@@ -13,7 +13,10 @@ export const TaskModel = (sequelize, DataTypes) => {
   }
   Task.init({
     name: DataTypes.STRING,
-    assignedTo: DataTypes.STRING,
+    assignedTo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     status: {
       type: DataTypes.ENUM("To-Do", "Started", "Finished"), 
       defaultValue: "To-Do",
@@ -23,7 +26,7 @@ export const TaskModel = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    deadline: DataTypes.DATEONLY
+    deadline: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Task',

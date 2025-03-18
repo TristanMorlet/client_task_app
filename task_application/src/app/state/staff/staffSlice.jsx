@@ -24,7 +24,7 @@ const staffSlice = createSlice({
         },
 
         assignTask: (state, action) => {
-           const {staffId, taskId} = action.payload
+           const {staffId, taskId, taskStatus} = action.payload
            console.log(taskId)
            const staffMember = state.find(staff => {
             return staff.id == staffId})
@@ -34,25 +34,31 @@ const staffSlice = createSlice({
 
            if (staffMember) {
 
-                if (!staffMember.taskList.includes(taskId)) {
+                if (!staffMember.taskList.includes(taskId) && taskStatus !== "Finished") {
                 staffMember.taskList.push(taskId)
+                }
+                if (taskStatus === "Finished" && !staffMember.completeList.includes(taskId)) {
+                    staffMember.completeList.push(taskId)
                 }
 
             staffMember.tasksAssigned = (staffMember.taskList.length + staffMember.completeList.length)
            }
+            staffMember.tasksCompleted = (staffMember.completeList.length)
 
            console.log("Number of Tasks Assigned to Staff Member", staffMember.tasksAssigned)
         },
 
         unassignTask: (state, action) => {
-           const {staffId, taskId} = action.payload
+           const {staffId, taskId, taskStatus} = action.payload
            const staffMember = state.find(staff => staff.id == staffId)
 
            if (staffMember) {
              
              staffMember.taskList = staffMember.taskList.filter(id => id !== taskId)
+             staffMember.completeList = staffMember.completeList.filter(id => id !== taskId)
              staffMember.tasksAssigned = staffMember.taskList.length + staffMember.completeList.length
            }
+
 
         },
 
@@ -75,9 +81,24 @@ const staffSlice = createSlice({
             
             console.log("Number of Tasks Assigned to Staff Member", staffMember.tasksAssigned)
             console.log("Number of Tasks Completed by Staff Member", staffMember.tasksCompleted)
-         },
+        },
+        uncompleteTask: (state, action) => {
+            const { staffId, taskId } = action.payload
+            const staffMember = state.find(staff => staff.id == staffId)
+            console.log("Staff Member uncompleting a Task", staffMember.name)
+            if (staffMember) {
+                staffMember.completeList = staffMember.completeList.filter(id => id !== taskId)
+                if (!staffMember.taskList.includes(taskId)) {
+                    staffMember.taskList.push(taskId)
+                }
+                staffMember.tasksCompleted = staffMember.completeList.length
+                staffMember.tasksAssigned = staffMember.taskList.length + staffMember.completeList.length
+            }
+            console.log("Number of Tasks Assigned to Staff Member", staffMember.tasksAssigned)
+            console.log("Number of Tasks Completed by Staff Member", staffMember.tasksCompleted)
+        }
     },
 });
 
-export const { addStaff, deleteStaff, setSort, assignTask, unassignTask, completeTask, setStaff} = staffSlice.actions
+export const { addStaff, deleteStaff, setSort, assignTask, unassignTask, completeTask, uncompleteTask, setStaff} = staffSlice.actions
 export default staffSlice.reducer;
