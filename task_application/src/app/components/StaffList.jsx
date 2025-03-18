@@ -82,11 +82,11 @@ export default function StaffList( {page, searchText, dateRange, user} ) {
         {processedStaff.map((member) => (
             <div key={member.id}>
                 
-                <h1 className="text-bold text-md md:text-xl"> {member.name} </h1>
+                <h1 className="text-bold text-sm md:text-2xl"> {member.name} </h1>
                 <div className="flex justify-between items-center text-gray-500">
                 {page === 'staff' && (
                     <>
-                    <div className="px-4 py-1 text-xs md:text-base">
+                    <div className="px-4 py-1 text-xs md:text-lg">
                         <p>Date Added: {new Date(member.dateAdded).toLocaleDateString("en-GB")}</p>
                         <p>Email: {member.email}</p>
                     </div>
@@ -95,7 +95,7 @@ export default function StaffList( {page, searchText, dateRange, user} ) {
                         )} 
                 {page === 'metrics' && (
                     <>
-                    <div className="px-4 py-1 text-xs md:text-base">
+                    <div className="px-4 py-1 text-xs md:text-lg">
                         <p>Tasks Assigned: {member.tasksAssigned}</p>
                         <p>Tasks Completed: {member.tasksCompleted}</p>
                     </div>

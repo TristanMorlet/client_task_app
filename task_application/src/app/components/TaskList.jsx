@@ -122,7 +122,8 @@ export default function TaskList({searchText, role}) {
     const defaultTaskLists = [TODO, STARTED, FINISHED];
   
     return (
-    <div className="grid grid-cols-3 gap-4 p-5 w-full md:w-2/3">
+    // <div className="grid grid-cols-3 gap-2 md:gap-4 p-5 w-full md:w-2/3">
+    <div className="p-5 m-2 flex flex-col space-y-2 gap-2 md:grid md:grid-cols-3 md:gap-4 md:w-2/3">
         {defaultTaskLists.map((title, index) => (
             <TaskColumn key={index} title={title} tasks={groupedTasks[title] || []} role={role} />
         ))}

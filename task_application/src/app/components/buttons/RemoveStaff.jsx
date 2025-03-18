@@ -71,7 +71,7 @@ export default function RemoveStaff( {member} ) {
             <div>
                 <button 
                 onClick={handleDeleteStaff}
-                className="text-white rounded-md px-4 py-2 bg-red-500 text-center text-bold hover:bg-red-300 transition text-sm md:text-xs">
+                className="text-white rounded-md px-4 py-2 bg-red-500 text-center text-bold hover:bg-red-300 transition text-xs md:text-sm">
                     Remove Staff Member
                 </button>
             </div>
