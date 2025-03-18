@@ -9,7 +9,7 @@ export async function GET() {
         return new NextResponse(JSON.stringify(users), {status: 200})
     } catch (err) {
         console.error("Failed to fetch staff", err);
-        return new NextResponse(JSON.stringify({error: "failed to fetch staff"}), {status: 500})
+        return new NextResponse(JSON.stringify({error: "failed to fetch users"}), {status: 500})
     }
 }
 

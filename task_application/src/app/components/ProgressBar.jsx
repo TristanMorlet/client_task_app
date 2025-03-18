@@ -16,8 +16,9 @@ export default function ProgressBar({page, member, user}) {
 
     const staff = useSelector((state) => state.staff)
     console.log(user)
-    const staffMember = staff.find((s) => s.userId === user.id)
-    console.log("Found Staff member", staffMember)
+    
+    const staffMember = (user.role === "worklead") ? member : staff.find((s) => s.userId === user.id)
+    console.log("Found Staff Member", staffMember)
     
     
   
@@ -60,7 +61,7 @@ export default function ProgressBar({page, member, user}) {
 
         {page === "metrics" && (
         <div>
-            <label htmlFor='progressbar' className="text-sm">
+            <label htmlFor='progressbar' className="text-xs md:text-sm">
                 Completion Rate: {member.tasksAssigned > 0 ? Math.round((member.tasksCompleted / member.tasksAssigned) * 100) : 0}%
             </label>
             <progress 

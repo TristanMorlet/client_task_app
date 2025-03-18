@@ -42,13 +42,13 @@ export default function MetricsPage() {
       <div className="flex flex-col h-screen"> 
             <div className="flex justify-between items-center px-5 py-3 m-3">
                 <div>
-                    <h1 className="font-bold text-4xl">Metrics</h1>
+                    <h1 className="font-bold text-2xl md:text-4xl">Metrics</h1>
                 </div>
                 <DateRangeSelector handleSelect={handleSelect}  />
                 <Sort listOfOptions={sortOptions} />
                 
               </div>
-              <StaffList searchText={searchText} page="metrics" dateRange={dateRange}/>
+              <StaffList searchText={searchText} page="metrics" dateRange={dateRange} user={user}/>
             </div>
     </div>
   )

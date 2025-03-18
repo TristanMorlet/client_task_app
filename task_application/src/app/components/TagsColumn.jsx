@@ -41,7 +41,7 @@ export default function TagsColumn({tagName, tagId, tasks, role}) {
     return (
     <div className="p-4 flex flex-col bg-gray-50 rounded-lg border border-gray-300 h-fit">
         <h4 
-            className="text-lg font-semibold p-3 border-b cursor-pointer flex justify-between items-center"
+            className="text-sm md:text-lg font-semibold p-3 border-b cursor-pointer flex justify-between items-center"
             onClick={handleToggleListView}>
                 {tagName}
                 <span>{tagsState[tagName] ? "▲" : "▼"}</span>
@@ -57,7 +57,7 @@ export default function TagsColumn({tagName, tagId, tasks, role}) {
                 <p className="text-gray-400 text-sm text-center">No tasks in {tagName}</p>
             )}
              <button 
-                className="w-full mt-2 mx-2 bg-red-300 px-2 py-1 rounded hover:bg-red-200 items-center text-sm text-white"
+                className="w-11/12 md:w-full mt-2 mx-2 bg-red-300 px-2 py-1 rounded hover:bg-red-200 items-center text-sm text-white"
                 onClick={handleDeleteTag}>
                     Delete Tag
             </button>

@@ -66,7 +66,7 @@ export default function LogInForm() {
   
     return (
     <div className="flex justify-center items-center min-h-screen">
-        <div className="p-12 rounded-lg shadow-md  text-center border w-2/5">
+        <div className="p-12 rounded-lg shadow-md  text-center border w-4/5 md:w-2/5">
             <h1 className="font-2xl font-bold mb-2"> Task Application
             </h1>
             <p className="text-gray-500 mb-4"> Who is logging in?</p>

@@ -13,7 +13,7 @@ export default function SearchBar( {setSearch} ) {
         <input
           type="text"
           placeholder="Search"
-          className="border border-gray-300 rounded px-2 py-1 mr-2"
+          className="border border-gray-300 rounded px-2 py-1 mr-2 w-11/12 md:w-auto"
           onChange={handleChange}
         />
     </div>

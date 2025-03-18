@@ -23,13 +23,13 @@ export default function AllTasksPageComponent() {
             <div className="flex-grow overflow-auto">
                 <div className="flex justify-between items-center px-5 py-3 m-3">
                     <div>
-                        <h1 className="font-bold text-4xl">Tasks</h1>
+                        <h1 className="font-bold text-2xl md:text-4xl">Tasks</h1>
                     </div>
                     <Filter/>
                 </div>
                 <TaskList searchText={searchText} role={user.role}/>
                 <div className="flex justify-between items-center px-5 py-3 m-3">
-                    <h1 className="font-bold text-4xl">Tags</h1>
+                    <h1 className="font-bold text-2xl md:text-4xl">Tags</h1>
                 </div>
                 <div className="mb-20">
                     <TagsList role={user.role} />

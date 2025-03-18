@@ -86,14 +86,14 @@ export default function AddStaff() {
       <div>
         <button 
           onClick={togglePopUp}
-          className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition">
+          className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition text-sm md:text-md">
             Add Staff Member
         </button>
       </div>
 
       {formOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg w-1/5 shadow-lg">
+          <div className="bg-white p-6 rounded-lg w-3/5 md:w-1/5 shadow-lg">
               <h2 className="text-xl font-bold mb-5 text-center"> New Staff </h2>
 
               <form>

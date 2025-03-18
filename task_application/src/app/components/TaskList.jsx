@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import TaskColumn from './TaskColumn';
 import { groupTasksByStatus } from '../utils/groupByStatus';
 import { setTasks } from '../state/tasks/taskSlice';
-
+import { updateTask } from '../state/tasks/taskSlice';
 
 export default function TaskList({searchText, role}) {
     const TODO = "To-Do"
@@ -30,7 +30,52 @@ export default function TaskList({searchText, role}) {
         fetchTasks();
     }, [dispatch])
 
+    useEffect(() => {
+        async function checkOverdueTasks() {
+            const today = new Date().toLocaleDateString('en-GB');
+            tasks.forEach(async (task) => {
+                if (new Date(task.deadline).toLocaleDateString('en-GB') < today && !task.overdue && task.status !== "Finished") {
+                    try {
+                        const res = await fetch(`/api/taskAPIs/${task.id}`, {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ overdue: true })
+                        });
+                        if (res.ok) {
+                            dispatch(updateTask({ taskId: task.id, property: 'overdue', value: true }));
+                        } else {
+                            console.error("Failed to update task overdue status in DB");
+                        }
+                    } catch (err) {
+                        console.error("Error updating task overdue status in DB", err);
+                    }
+                } else if (task.status === "Finished" && task.overdue) {
+                    try {
+                        const res = await fetch(`/api/taskAPIs/${task.id}`, {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ overdue: false })
+                        });
+                        if (res.ok) {
+                            dispatch(updateTask({ taskId: task.id, property: 'overdue', value: false }));
+                        } else {
+                            console.error("Failed to update task overdue status in DB");
+                        }
+                    } catch (err) {
+                        console.error("Error updating task overdue status in DB", err);
+                    }
+                }
+            });
+        }
 
+        checkOverdueTasks();
+        const interval = setInterval(checkOverdueTasks, 24 * 60 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, [tasks, dispatch]);
 
 
     const filters = useSelector((state) => {
@@ -51,7 +96,7 @@ export default function TaskList({searchText, role}) {
 
         const matchesDateAdded = filters.dateAdded === null || task.dateAdded === filters.dateAdded;
 
-        const matchesOverdue = filters.overdue === false || !task.overdue;
+        const matchesOverdue = filters.overdue === false || task.overdue;
 
         const matchesDateRange = filters.dateRange && filters.dateRange.length === 2
             ? tasks.some(task => {
@@ -77,7 +122,7 @@ export default function TaskList({searchText, role}) {
     const defaultTaskLists = [TODO, STARTED, FINISHED];
   
     return (
-    <div className="grid grid-cols-3 gap-4 p-5 w-2/3">
+    <div className="grid grid-cols-3 gap-4 p-5 w-full md:w-2/3">
         {defaultTaskLists.map((title, index) => (
             <TaskColumn key={index} title={title} tasks={groupedTasks[title] || []} role={role} />
         ))}

@@ -9,9 +9,10 @@ import { assignTask } from '@/app/state/staff/staffSlice';
 export default function PopUpForm({ status }) {
     const [formOpen, setFormOpen] = useState(false);
     const [taskName, setTaskName] = useState("")
-    const [assignedTo, setAssignedTo] = useState("1")
+    const [assignedTo, setAssignedTo] = useState(null)
     const [deadline, setDeadline] = useState("")
     const [tags, setTags] = useState([])
+    const [showWarning, setShowWarning] = useState(false)
     const dispatch = useDispatch();
     const availableTags = useSelector((state) => state.tags.tags)
     const staff = useSelector((state) => state.staff)
@@ -20,10 +21,13 @@ export default function PopUpForm({ status }) {
         setFormOpen(!formOpen)
         if (!formOpen) {
             setTaskName("");
-            setAssignedTo("None");
+            setAssignedTo(null);
             setDeadline("");
             setTags([]);
           }
+        if (showWarning) {
+            setShowWarning(!showWarning)
+        }
           
     }
 
@@ -31,7 +35,10 @@ export default function PopUpForm({ status }) {
     async function handleSubmit(e) {
         e.preventDefault();
         
-        if (!taskName.trim() || !deadline.trim()) return;
+        if (!taskName.trim() || !deadline.trim() || assignedTo === null) {
+            setShowWarning(true);
+            return;
+        }
 
         const newTask = {
             name: taskName,
@@ -57,10 +64,11 @@ export default function PopUpForm({ status }) {
             console.log("New Task created in DB", dbTask)
 
             console.log("Assigned to of new task", dbTask.assignedTo)
+            console.log(dbTask.deadline)
 
             dispatch(addTask(dbTask))
 
-            if (dbTask.assignedTo !== "1") {
+            if (dbTask.assignedTo !== null) {
                 const assignedStaff = staff.find(s => s.id == dbTask.assignedTo)
                 console.log(assignedStaff)
                 const updatedTaskList =  [...assignedStaff.taskList, dbTask.id]
@@ -104,7 +112,7 @@ export default function PopUpForm({ status }) {
             {formOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
 
-                    <div className="bg-white p-6 rounded-lg w-1/5 shadow-lg">
+                    <div className="bg-white p-6 rounded-lg  w-3/5 md:w-1/5 shadow-lg">
                         <h2 className="text-xl font-bold mb-5 text-center"> New Task </h2>
 
                         <form>
@@ -125,12 +133,20 @@ export default function PopUpForm({ status }) {
                                 <label htmlFor="assign" className="mb-4 text-gray-700 font-medium">Assign To:</label>
                                 <select 
                                     className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200"
-                                    value={assignedTo}
+                                    value={assignedTo || ""}
                                     onChange={(e) => {
-                                    const selectedStaff = staff.find((s) => {
-                                    return s.id == e.target.value});
-                                    console.log(selectedStaff)
-                                    setAssignedTo(selectedStaff.id)}}>
+                                        if (e.target.value === "") {
+                                            setAssignedTo(null);
+                                        } else {
+                                            const selectedStaff = staff.find((s) => {
+                                            return s.id == e.target.value});
+                                            console.log(selectedStaff)
+                                            setAssignedTo(selectedStaff.id)}}}>
+                                        <option
+                                        value={""}
+                                        >
+                                            None
+                                        </option>
                                     {staff.map((staffMember) => (
                                         <option 
                                             key={staffMember.id} 
@@ -175,12 +191,12 @@ export default function PopUpForm({ status }) {
                                                 }}
                                                 className="mr-2"
                                             />
-                                            <label htmlFor={tag} className="text-gray-700">{tag.tagName}</label>
+                                            <label htmlFor={tag.id} className="text-gray-700">{tag.tagName}</label>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="p-2 flex justify-end space-x-3 mt-6">
+                            <div className="p-2 flex justify-center space-x-3 mt-6">
                                 <button
                                     onClick={handleSubmit}
                                     className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition"
@@ -194,6 +210,9 @@ export default function PopUpForm({ status }) {
                                     Cancel 
                                 </button>
                             </div>
+                            {showWarning && (
+                                    <p className="text-center text-red-500 mt-2"> Invalid Name, Assignment, or Deadline </p>
+                                )}
                         </form>
                     </div>
                 </div>

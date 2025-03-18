@@ -24,11 +24,11 @@ export default function StaffPage() {
         <div className="flex flex-col h-screen"> 
             <div className="flex justify-between items-center px-5 py-3 m-3">
                 <div>
-                    <h1 className="font-bold text-4xl">Staff</h1>
+                    <h1 className="font-bold text-2xl md:text-4xl">Staff</h1>
                 </div>
                 <Sort listOfOptions={sortOptions} />
             </div>
-            <div className="flex content-center justify-end mx-8 text-sm">
+            <div className="flex content-center justify-end mx-8 text-xs md:text-sm">
               <div>
                 <AddStaff />
               </div>

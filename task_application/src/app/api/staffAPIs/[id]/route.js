@@ -29,7 +29,7 @@ export async function PATCH(req, { params }){
 
         const staff = await db.Staff.findByPk(id)
         if (!staff) {
-            return new NextResponse(JSON.stringify({error: "could not find staff"}, {status: 404}))
+            return new NextResponse(JSON.stringify({error: "could not find staff"}), {status: 404})
         }
 
         Object.keys(updates).forEach((key) => {
@@ -43,6 +43,6 @@ export async function PATCH(req, { params }){
         return new NextResponse(JSON.stringify({message: "Staff updated successfully"}), staff)
     } catch (err) {
         console.error("Error updating staff", err)
-        return new NextResponse(JSON.stringify({message: "Error updating staff", err}), {status: 500})
+        return new NextResponse(JSON.stringify({error: "Error updating staff"}), {status: 500})
     }
 }
