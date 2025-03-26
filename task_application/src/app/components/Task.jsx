@@ -17,7 +17,7 @@ export default function Task( {task, role}) {
     <div className="p-3 mb-2 rounded shadow-md bg-white border border-gray-300">
       <div className="flex justify-between items-center">
 
-        <p className={`font-semibold text-xs md:text-base${task.overdue ? "text-red-500" : "text-black"}`}>{task.name}</p>
+        <p className={`font-semibold text-xs md:text-lg ${task.overdue ? "text-red-500" : "text-black"}`}>{task.name}</p>
         <button 
             className="font-bold text-sm md:text-lg mb-1 px-2 md:px-4"
             onClick={handleToggleInfo}>

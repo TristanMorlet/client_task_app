@@ -27,16 +27,31 @@ export async function PATCH(req, { params }){
         const { id } = await params
         const updates = await req.json()
         console.log(updates)
-        const task = await db.Task.findByPk(id)
+        const task = await db.Task.findByPk(id, {
+            include: [
+                {
+                    model: db.Tag,
+                    as: 'tags' 
+                }
+            ]
+        });
         if (!task) {
             return new NextResponse(JSON.stringify({error: "could not find task"}), {status: 404})
         }
 
         Object.keys(updates).forEach((key) => {
-            if (key in task) {
+            if (key !== 'tags' && key in task) {
                 task[key] = updates[key]
             }
         })
+        if (updates.tags) {
+            const tagIds = updates.tags.map(tag => tag.id);
+            
+            await task.setTags(tagIds); 
+
+            console.log(`Task tags updated: ${tagIds}`);
+        }
+
 
         await task.save()
 

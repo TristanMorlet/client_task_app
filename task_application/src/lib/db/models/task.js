@@ -8,20 +8,24 @@ export const TaskModel = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Task.belongsTo(models.Staff, { foreignKey: 'assignedTo' });
+      Task.belongsToMany(models.Tag, {through: "TaskTags", foreignKey: 'taskId', as: "tags"})
     }
   }
   Task.init({
     name: DataTypes.STRING,
     assignedTo: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: 'Staff',
+        key: 'id'
+      }
     },
     status: {
       type: DataTypes.ENUM("To-Do", "Started", "Finished"), 
       defaultValue: "To-Do",
     },
-    tags: DataTypes.ARRAY(DataTypes.JSONB),
     overdue: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

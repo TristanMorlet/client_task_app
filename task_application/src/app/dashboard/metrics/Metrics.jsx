@@ -44,7 +44,10 @@ export default function MetricsPage() {
                 <div>
                     <h1 className="font-bold text-2xl md:text-4xl">Metrics</h1>
                 </div>
+                <div className="w-1/3 md:w-auto">
                 <DateRangeSelector handleSelect={handleSelect}  />
+                </div>
+                
                 <Sort listOfOptions={sortOptions} />
                 
               </div>

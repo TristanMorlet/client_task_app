@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import RemoveStaff from './Buttons/RemoveStaff'
 import ProgressBar from './ProgressBar'
@@ -12,6 +12,8 @@ export default function StaffList( {page, searchText, dateRange, user} ) {
     const tasks = useSelector((state) => state.tasks.tasks)
     const dispatch = useDispatch()
     console.log("Staff List available to staffList", staff)
+
+    const [staffWithTaskCounts, setStaffWithTaskCounts] = useState([])
 
     useEffect(() => {
         async function fetchUsers() {
@@ -41,52 +43,56 @@ export default function StaffList( {page, searchText, dateRange, user} ) {
           fetchStaff();
       }, [dispatch])
 
-    
-    const filterStaff = staff.filter((staff) => {
+      useEffect(() => {
+        const updatedStaff = staff.map(member => {
+            const assignedTasks = tasks.filter(task => task.assignedTo === member.id)
+            const completedTasks = assignedTasks.filter(task => task.status === "Finished")
+
+            if (dateRange && dateRange.length === 2) {
+                const [startDate, endDate] = dateRange.map(date => new Date(date).getTime())
+
+                const filterTasksByDate = taskList => taskList.filter(task => {
+                    const taskDate = new Date(task.createdAt).getTime()
+                    return taskDate >= startDate && taskDate <= endDate
+                })
+
+                return {
+                    ...member,
+                    tasksAssigned: filterTasksByDate(assignedTasks).length,
+                    tasksCompleted: filterTasksByDate(completedTasks).length,
+                }
+            }
+
+            return {
+                ...member,
+                tasksAssigned: assignedTasks.length,
+                tasksCompleted: completedTasks.length,
+            }
+        })
+
+        setStaffWithTaskCounts([...updatedStaff])
+        console.log(staffWithTaskCounts)
+    }, [tasks, staff, dateRange])
+    console.log(staffWithTaskCounts)
+    const filterStaff = staffWithTaskCounts.filter((staff) => {
         const matchesSearchText = staff.name.toLowerCase().includes(searchText.toLowerCase());
         return matchesSearchText
     })
     console.log("Filtered Staff List", filterStaff)
 
-    const processedStaff = filterStaff.map(member => {
-        const [startDate, endDate] = dateRange && dateRange.length === 2 
-            ? dateRange.map(date => new Date(date).getTime())
-            : [null, null];
-        
-        const filterTasksByDate = (taskList) => taskList.filter(taskId => {
-            const task = tasks.find(t => t.id === taskId)
-            if (!task) return false;
-            const taskDate = new Date(task.id).getTime()
-            return startDate && endDate ? taskDate >= startDate && taskDate <= endDate: true;
-        }) 
-
-        const filteredTaskList = filterTasksByDate(member.taskList)
-        const filteredCompleteList = filterTasksByDate(member.completeList)
-
-        return {
-            ...member,
-            taskList: filteredTaskList,
-            completeList: filteredCompleteList,
-            tasksAssigned: filteredTaskList.length + filteredCompleteList.length,
-            tasksCompleted: filteredCompleteList.length
-        }
-    })
-    
-    console.log("Processed Staff List with Date Filter:", processedStaff)
-    
     
   
   
     return (
     <div className="flex-row space-y-4 py-4 px-9">
-        {processedStaff.map((member) => (
+        {filterStaff.map((member) => (
             <div key={member.id}>
                 
-                <h1 className="text-bold text-md md:text-xl"> {member.name} </h1>
+                <h1 className="text-bold text-sm md:text-2xl"> {member.name} </h1>
                 <div className="flex justify-between items-center text-gray-500">
                 {page === 'staff' && (
                     <>
-                    <div className="px-4 py-1 text-xs md:text-base">
+                    <div className="px-4 py-1 text-xs md:text-lg">
                         <p>Date Added: {new Date(member.dateAdded).toLocaleDateString("en-GB")}</p>
                         <p>Email: {member.email}</p>
                     </div>
@@ -95,7 +101,7 @@ export default function StaffList( {page, searchText, dateRange, user} ) {
                         )} 
                 {page === 'metrics' && (
                     <>
-                    <div className="px-4 py-1 text-xs md:text-base">
+                    <div className="px-4 py-1 text-xs md:text-lg">
                         <p>Tasks Assigned: {member.tasksAssigned}</p>
                         <p>Tasks Completed: {member.tasksCompleted}</p>
                     </div>

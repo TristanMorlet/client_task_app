@@ -3,7 +3,7 @@ import { assignTask, unassignTask, completeTask } from "../staff/staffSlice";
 const initialState = {
     tasks: [],
     filters: {
-        assignedTo: "",
+        assignedTo: null,
         dateAdded: null,
         tags: [],
         overdue: false,
