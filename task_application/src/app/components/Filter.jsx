@@ -32,6 +32,8 @@ export default function Filter() {
         } else {
             updatedFilters.tags = updatedFilters.tags.filter(tag => tag !== Number(value));
         }
+    } else if (name === "assignedTo") {  
+        updatedFilters.assignedTo = value === "" ? null : Number(value);
     } else if (type === "checkbox") {
             updatedFilters[name] = checked
     } else {
@@ -117,7 +119,7 @@ export default function Filter() {
                                 onChange={handleFilterChange}
                             >
                                 <option
-                                value = {null}
+                                value = {""}
                                 >
                                     None
                                 </option>

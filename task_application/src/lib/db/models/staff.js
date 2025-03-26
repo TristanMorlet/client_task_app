@@ -10,6 +10,8 @@ export const StaffModel = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Staff.belongsTo(models.Users, {foreignKey: 'userId', as: "userAccount"})
+      Staff.hasMany(models.Task, {foreignKey: 'assignedTo', as: 'assignedTasks'});
+
     }
   }
   Staff.init({
@@ -25,13 +27,12 @@ export const StaffModel = (sequelize, DataTypes) => {
       }
     },
     dateAdded: DataTypes.DATE,
-    tasksAssigned: DataTypes.INTEGER,
-    tasksCompleted: DataTypes.INTEGER,
-    taskList: DataTypes.ARRAY(DataTypes.JSONB),
-    completeList: DataTypes.ARRAY(DataTypes.JSONB),
+    // tasksAssigned: DataTypes.INTEGER,
+    // tasksCompleted: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Staff',
+    tableName: 'Staff',
   });
   return Staff;
 };

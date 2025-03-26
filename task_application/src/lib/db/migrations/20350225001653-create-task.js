@@ -13,15 +13,16 @@ module.exports = {
         type: Sequelize.STRING
       },
       assignedTo: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Staff",
+          key: "id"
+        }
       },
       status: {
         type: Sequelize.ENUM("To-Do", "Started", "Finished"),
         defaultValue: "To-Do"
-      },
-      tags: {
-        type: Sequelize.ARRAY(Sequelize.JSONB)
       },
       overdue: {
         type: Sequelize.BOOLEAN

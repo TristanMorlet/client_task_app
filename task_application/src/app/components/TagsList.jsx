@@ -34,9 +34,9 @@ export default function TagsList( {role} ) {
   
   return (
     <div className="flex items-center justify-start">
-      <div className='grid grid-flow-col auto-cols-max gap-4 p-5 overflow-x-auto'>
+      <div className='md:grid md:grid-flow-col md:auto-cols-max md:gap-4 md:p-5 md:overflow-x-auto md:space-y-0 md:w-auto m-2 p-5 w-full flex flex-col space-y-2 gap-2 " '>
           {tags.map((tag) => (
-              <TagsColumn key={tag.id} tagName={tag.tagName} tagId={tag.id} tasks={groupedTasksbyTags[tag.tagName] || []} role={role} />
+              <TagsColumn key={tag.id} tagName={tag.tagName} tagId={tag.id} tasks={groupedTasksbyTags[tag.id] || []} role={role} />
           ))}
       </div>
       {role === "worklead" && (

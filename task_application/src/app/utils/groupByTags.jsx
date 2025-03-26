@@ -3,10 +3,10 @@ export function groupTasksByTags(tasks) {
 
     tasks.forEach(task => {
         task.tags.forEach(tag => {
-            if (!groupedTasks[tag.tagName]) {
-                groupedTasks[tag.tagName] = []
+            if (!groupedTasks[tag.id]) {
+                groupedTasks[tag.id] = []
             }
-            groupedTasks[tag.tagName].push(task)
+            groupedTasks[tag.id].push(task)
         })
     })
     return groupedTasks

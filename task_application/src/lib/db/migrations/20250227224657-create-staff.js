@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Staffs', {
+    await queryInterface.createTable('Staff', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -29,18 +29,12 @@ module.exports = {
       dateAdded: {
         type: Sequelize.DATE
       },
-      tasksAssigned: {
+      /*tasksAssigned: {
         type: Sequelize.INTEGER
       },
       tasksCompleted: {
         type: Sequelize.INTEGER
-      },
-      taskList: {
-        type: Sequelize.ARRAY(Sequelize.JSONB)
-      },
-      completeList: {
-        type: Sequelize.ARRAY(Sequelize.JSONB)
-      },
+      }, */
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -52,6 +46,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Staffs');
+    await queryInterface.dropTable('Staff');
   }
 };

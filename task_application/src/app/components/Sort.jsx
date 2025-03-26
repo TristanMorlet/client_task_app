@@ -8,9 +8,21 @@ export default function Sort( {listOfOptions} ) {
   
     const dispatch = useDispatch();
     const staff = useSelector((state) => state.staff)
-    
+    const tasks = useSelector((state) => state.tasks.tasks);
+
 
     const [dropDownOpen, setDropDownOpen] = useState({sort: false})
+
+    function getStaffMetrics(staffMember) {
+        const assignedTasks = tasks.filter(task => task.assignedTo === staffMember.id);
+        const completedTasks = assignedTasks.filter(task => task.status === "Finished");
+
+        return {
+            tasksAssigned: assignedTasks.length,
+            tasksCompleted: completedTasks.length,
+            completionRate: assignedTasks.length > 0 ? completedTasks.length / assignedTasks.length : 0
+        };
+    }
 
     function handleSortChange(sortType) {
         let sortedStaff = staff.filter(member => member.name !== "None");
@@ -30,22 +42,22 @@ export default function Sort( {listOfOptions} ) {
                 sortedStaff.sort((a,b) => new Date(a.dateAdded) - new Date(b.dateAdded))
                 break;
             case 'leastTasks':
-                sortedStaff.sort((a,b) => a.tasksAssigned - b.tasksAssigned)
+                sortedStaff.sort((a,b) => getStaffMetrics(a).tasksAssigned - getStaffMetrics(b).tasksAssigned)
                 break;
             case 'mostTasks':
-                sortedStaff.sort((a,b) => b.tasksAssigned - a.tasksAssigned)
+                sortedStaff.sort((a,b) => getStaffMetrics(b).tasksAssigned - getStaffMetrics(a).tasksAssigned)
                 break;
             case 'leastCompleted':
-                sortedStaff.sort((a,b) => a.tasksCompleted - b.tasksCompleted)
+                sortedStaff.sort((a,b) => getStaffMetrics(a).tasksCompleted - getStaffMetrics(b).tasksCompleted)
                 break;
             case 'mostCompleted':
-                sortedStaff.sort((a,b) => b.tasksCompleted - a.tasksCompleted)
+                sortedStaff.sort((a,b) => getStaffMetrics(b).tasksCompleted - getStaffMetrics(a).tasksCompleted)
                 break;
             case 'lowCompletedRate':
-                sortedStaff.sort((a,b) => (a.tasksCompleted / a.tasksAssigned) - (b.tasksCompleted / b.tasksAssigned))
+                sortedStaff.sort((a,b) => getStaffMetrics(a).completionRate - getStaffMetrics(b).completionRate)
                 break;
             case 'highCompletedRate':
-                sortedStaff.sort((a,b) => (b.tasksCompleted / b.tasksAssigned) - (a.tasksCompleted / a.tasksAssigned))
+                sortedStaff.sort((a,b) => getStaffMetrics(b).completionRate - getStaffMetrics(a).completionRate)
                 break;
         }
         dispatch(setSort(sortedStaff));

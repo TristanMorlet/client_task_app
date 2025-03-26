@@ -9,7 +9,7 @@ import { assignTask } from '@/app/state/staff/staffSlice';
 export default function PopUpForm({ status }) {
     const [formOpen, setFormOpen] = useState(false);
     const [taskName, setTaskName] = useState("")
-    const [assignedTo, setAssignedTo] = useState(null)
+    const [assignedTo, setAssignedTo] = useState(undefined)
     const [deadline, setDeadline] = useState("")
     const [tags, setTags] = useState([])
     const [showWarning, setShowWarning] = useState(false)
@@ -44,9 +44,9 @@ export default function PopUpForm({ status }) {
             name: taskName,
             assignedTo,
             deadline,
-            tags,
+            tags: tags.map(tag => tag.id),
             status,
-            overdue: false,
+            overdue: (new Date(deadline) <= new Date().toLocaleDateString('en-GB')),
         }
 
 
@@ -67,31 +67,6 @@ export default function PopUpForm({ status }) {
             console.log(dbTask.deadline)
 
             dispatch(addTask(dbTask))
-
-            if (dbTask.assignedTo !== null) {
-                const assignedStaff = staff.find(s => s.id == dbTask.assignedTo)
-                console.log(assignedStaff)
-                const updatedTaskList =  [...assignedStaff.taskList, dbTask.id]
-                const completeList = assignedStaff.completeList
-                const staffResponse = await fetch(`/api/staffAPIs/${dbTask.assignedTo}`, {
-                    method: "PATCH",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        taskList: updatedTaskList, 
-                        tasksAssigned: updatedTaskList.length + completeList.length,
-
-                    })
-                })
-
-                if (!staffResponse.ok){
-                    throw new Error({message: "Error updating task property"})
-                }
-
-                dispatch(assignTask({staffId: dbTask.assignedTo, taskId: dbTask.id}))
-            }
-
             togglePopUp()
 
         } catch (error) {
@@ -133,17 +108,10 @@ export default function PopUpForm({ status }) {
                                 <label htmlFor="assign" className="mb-4 text-gray-700 font-medium">Assign To:</label>
                                 <select 
                                     className="mb-4 border border-gray-300 rounded px-3 py-2 w-2/3 focus:border-gray-200"
-                                    value={assignedTo || ""}
-                                    onChange={(e) => {
-                                        if (e.target.value === "") {
-                                            setAssignedTo(null);
-                                        } else {
-                                            const selectedStaff = staff.find((s) => {
-                                            return s.id == e.target.value});
-                                            console.log(selectedStaff)
-                                            setAssignedTo(selectedStaff.id)}}}>
+                                    value={assignedTo || undefined}
+                                    onChange={(e) => setAssignedTo(e.target.value ? Number(e.target.value) : undefined)}>
                                         <option
-                                        value={""}
+                                        value={undefined}
                                         >
                                             None
                                         </option>
@@ -179,7 +147,7 @@ export default function PopUpForm({ status }) {
                                                 type="checkbox"
                                                 id={tag}
                                                 value={tag}
-                                                checked={tags.includes(tag)}
+                                                checked={tags.some(t=> t.id === tag.id)}
                                                 onChange={(e) => {
                                                     setTags((prevTags) => {
                                                         if (e.target.checked) {

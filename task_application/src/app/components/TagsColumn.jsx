@@ -56,11 +56,13 @@ export default function TagsColumn({tagName, tagId, tasks, role}) {
             ) : (
                 <p className="text-gray-400 text-sm text-center">No tasks in {tagName}</p>
             )}
-             <button 
+            {role === "worklead" && (
+                <button 
                 className="w-11/12 md:w-full mt-2 mx-2 bg-red-300 px-2 py-1 rounded hover:bg-red-200 items-center text-sm text-white"
                 onClick={handleDeleteTag}>
                     Delete Tag
             </button>
+            )}
         </div>
     </div>
   )

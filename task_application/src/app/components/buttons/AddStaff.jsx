@@ -50,10 +50,6 @@ export default function AddStaff() {
           role: "staff",
           dateAdded: Date.now(),
           email: staffEmail,
-          tasksAssigned: 0,
-          tasksCompleted: 0,
-          taskList: [],
-          completeList: [],
           userId: dbUser.id,
         }
 
@@ -86,7 +82,7 @@ export default function AddStaff() {
       <div>
         <button 
           onClick={togglePopUp}
-          className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition text-xs md:text-md">
+          className="text-white rounded-md px-4 py-2 bg-blue-500 text-center text-bold hover:bg-blue-300 transition text-xs md:text-base">
             Add Staff Member
         </button>
       </div>

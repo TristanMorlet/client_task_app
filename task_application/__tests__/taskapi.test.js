@@ -2,8 +2,7 @@ import db from '../src/lib/db/models'
 import { DELETE, PATCH } from "../src/app/api/taskAPIs/[id]/route"
 import { GET } from "../src/app/api/taskAPIs/getTasks/route"
 import { POST } from "../src/app/api/taskAPIs/createTask/route"
-import { M } from '../playwright-report/trace/assets/defaultSettingsView-5nVJRt0A';
-import { createReadStream } from 'fs';
+
 
 jest.mock("../src/lib/db/models", () => ({
     Task: {
@@ -11,7 +10,11 @@ jest.mock("../src/lib/db/models", () => ({
       create: jest.fn(),
       findByPk: jest.fn(),
       destroy: jest.fn(),
-      save: jest.fn()
+      save: jest.fn(),
+      reload: jest.fn()
+    },
+    TaskTags: {
+        bulkCreate: jest.fn()
     }
   }));
 
@@ -40,20 +43,43 @@ describe("Task API tests", () => {
     })
 
     test("POST API creates new task", async () => {
-        const newTask = {id: 1, name: "Task 1", assignedTo: "None", status: "To-Do", tags: [], overdue: false, deadline: "20/03/2025", createdAt: new Date().toLocaleDateString('en-GB'), updatedAt: new Date().toLocaleDateString('en-GB')}
+        const newTask = {id: 1, name: "Task 1", assignedTo: 2, status: "To-Do", overdue: false, deadline: "20/03/2025", createdAt: new Date().toLocaleDateString('en-GB'), updatedAt: new Date().toLocaleDateString('en-GB')}
 
+
+
+        const mockTags = [
+            { id: 1, tagName: "Tag 1", createdAt: new Date().toLocaleDateString('en-GB'), updatedAt: new Date().toLocaleDateString('en-GB') }
+        ];
+    
         db.Task.create.mockResolvedValue(newTask);
+    
+        newTask.reload = jest.fn().mockResolvedValue({
+            ...newTask,
+            tags: mockTags
+        });
+    
+        db.TaskTags.bulkCreate.mockResolvedValue(null); 
 
         const req = {
-            json: async() => newTask
-        }
+            json: async () => ({
+                ...newTask,
+                tags: mockTags
+            })
+        };
+
+        const { reload, ...expectedResponse } = {
+            ...newTask,
+            tags: mockTags
+        };
+
+        
 
         const response = await POST(req);
         const data = await response.json();
 
         expect(response.status).toBe(200)
-        expect(data).toEqual(newTask)
-        expect(data).toMatchObject(newTask)
+        expect(data).toEqual(expectedResponse)
+        expect(data).toMatchObject(expectedResponse)
     })
 
     test("DELETE API deletes task", async () => {
@@ -81,7 +107,9 @@ describe("Task API tests", () => {
     })
 
     test("PATCH API updates task", async () => {
-        const updateTask = {id: 1, name: "Task 1", assignedTo: "None", status: "To-Do", tags: [], overdue: false, deadline: "20/03/2025", createdAt: new Date().toLocaleDateString('en-GB'), updatedAt: new Date().toLocaleDateString('en-GB'), save: jest.fn()}
+        const updateTask = {id: 1, name: "Task 1", assignedTo: 1, status: "To-Do", tags: [], overdue: false, deadline: "20/03/2025", createdAt: new Date().toLocaleDateString('en-GB'), updatedAt: new Date().toLocaleDateString('en-GB'), save: jest.fn(), setTags: jest.fn((tagIds) => {
+            updateTask.tags = updates.tags;
+        })}
 
         db.Task.create.mockResolvedValue(updateTask)
 
@@ -94,7 +122,7 @@ describe("Task API tests", () => {
 
         db.Task.findByPk.mockResolvedValue(updateTask)
 
-        const updates = { status: "Finished", deadline: "21/03/2025", tags: ["Tag 1", "Tag 2"] }
+        const updates = { status: "Finished", deadline: "21/03/2025", tags: [{id: 1, tagName: "Tag 1", createdAt: new Date().toLocaleDateString("en-GB"), updatedAt: new Date().toLocaleDateString("en-GB")}, {id: 2, tagName: "Tag 2", createdAt: new Date().toLocaleDateString("en-GB"), updatedAt: new Date().toLocaleDateString("en-GB")}] }
 
         const request = {
             json: async() => updates
@@ -108,7 +136,7 @@ describe("Task API tests", () => {
         expect(updateTask.save).toHaveBeenCalled();
         expect(updateTask.status).toBe("Finished")
         expect(updateTask.deadline).toBe("21/03/2025")
-        expect(updateTask.tags).toEqual(["Tag 1", "Tag 2"])
+        expect(updateTask.tags).toEqual([{id: 1, tagName: "Tag 1", createdAt: new Date().toLocaleDateString("en-GB"), updatedAt: new Date().toLocaleDateString("en-GB")}, {id: 2, tagName: "Tag 2", createdAt: new Date().toLocaleDateString("en-GB"), updatedAt: new Date().toLocaleDateString("en-GB")}])
 
     })
 

@@ -5,7 +5,13 @@ export async function GET() {
     
     try {
         console.log(db.Task)
-        const tasks = await db.Task.findAll();
+        const tasks = await db.Task.findAll({
+            include: {
+                model: db.Tag,
+                as: "tags",
+                through: { attributes: [] } 
+            }
+        });
         return new NextResponse(JSON.stringify(tasks), {status: 200})
     } catch (err) {
         console.error("Failed to fetch tasks", err);
