@@ -34,16 +34,20 @@ Client Task App is a task management system designed for teams and allows team w
 - Node.js & npm
 - PostgreSQL database
 
-### Setup
+## Setup
+### Clone the repository
 ```sh
-# Clone the repository
 git clone https://github.com/yourusername/client_task_app.git
 cd client_task_app
+```
 
-# Install dependencies
+### Install dependencies
+```sh
 npm install
+```
 
-# Set up environment variables
+### Set up environment variables
+```sh
 cp .env.example .env
 # Edit .env with your database and auth credentials
 # EXAMPLE .env FILE
@@ -54,12 +58,13 @@ POSTGRES_PORT = 5432
 POSTGRES_USER = your
 POSTGRES_PASSWORD= database
 POSTGRES_DATABASE= yourdatabase
+```
 
 
+### Run database migrations and seed work-lead(s) for login
 
-# Run database migrations and seed work-lead(s) for login
-
-# Go to seeders folder, find the only file in there for seeding work leads, and add your worklead profile:
+Go to seeders folder, find the only file in there for seeding work leads, and add your worklead profile:
+```sh
 await queryInterface.bulkInsert('Users', [
     {
       id: 10000,
@@ -73,24 +78,26 @@ await queryInterface.bulkInsert('Users', [
     },
 
    ], {})
-
-# to run migrations, ensure Sequelize is installed, and enter the commands
+```
+to run migrations, ensure Sequelize is installed, and enter the commands
+```sh
 cd src/lib/db
 npx sequelize-cli db:migrate
 npx sequelize-cli db:seed:all
-
-# Start the development server
+```
+### Start the development server
+```sh
 npm run dev
 ```
 
 ## Testing
-# API tests
+### API tests
 API routes are tested using JEST, to run the tests ensure that JEST is installed, then in the command line type:
 ```sh
 npm test
 ```
 
-# End to End Testing
+### End to End Testing
 UI and end-to-end testing is done with Playwright, to run the tests, ensure Playwright is installed and in command line type:
 ```sh
 npx playwright test
@@ -104,11 +111,11 @@ npx playwright test --ui
 ## Docker Deployment
 
 A Dockerfile and docker-compose.yaml are provided for containerization.
-# Build the Docker Image
+### Build the Docker Image
 ```sh
 docker build -t client_task_app .
 ```
-# Run the Container
+### Run the Container
 ```sh
 docker-compose up
 ```
