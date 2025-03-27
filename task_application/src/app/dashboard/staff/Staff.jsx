@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 import Tabs from '../../components/Tabs'
 import Sort from '../../components/Sort'
 import StaffList from '@/app/components/StaffList'
-import AddStaff from '@/app/components/Buttons/AddStaff'
+import AddStaff from '@/app/components/buttons/AddStaff'
 import { useSelector } from 'react-redux'
 
 
