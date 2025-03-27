@@ -5,7 +5,7 @@ Client Task App is a task management system designed for teams and allows team w
 
 ## Features
 -  **Authentication** – Users can sign in with their email.
--  **Role-based Access** – Work-leads can manage tasks and staff; staff can view and complete tasks.
+-  **Role-based Access** – Work-leads can manage tasks and staff, staff can view and complete tasks.
 -  **Task Management** – Create, assign, update, and delete tasks.
 -  **Progress Tracking** – View task completion rates with progress bars.
 -  **Filtering & Search** – Filter tasks by status, deadline, and assignee.
@@ -34,7 +34,7 @@ Client Task App is a task management system designed for teams and allows team w
 **Testing**: Jest for API testing, Playwright for e2e testing
 
 ## Installation
-### Prerequisites
+### Make sure you have the following
 - Node.js & npm
 - PostgreSQL database
 
