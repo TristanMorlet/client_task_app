@@ -1,8 +1,6 @@
 import { addStaff } from '@/app/state/staff/staffSlice';
 import { test, expect } from '@playwright/test';
 
-let context;
-let page;
 const loginPage = 'http://localhost:3000/login'
 const allTasksPage = 'http://localhost:3000/dashboard/alltasks'
 const staffPage = 'http://localhost:3000/dashboard/staff'

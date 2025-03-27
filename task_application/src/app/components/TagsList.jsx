@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { groupTasksByTags } from '../utils/groupByTags'
 import TagsColumn from './TagsColumn'
 import { setTags } from '../state/tasks/tagSlice'
-import TagsPopUp from './Buttons/TagsPopUp'
+import TagsPopUp from './buttons/TagsPopUp'
 export default function TagsList( {role} ) {
   
   const tasks = useSelector((state) => state.tasks.tasks)

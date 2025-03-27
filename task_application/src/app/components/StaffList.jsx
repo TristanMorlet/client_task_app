@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import RemoveStaff from './Buttons/RemoveStaff'
+import RemoveStaff from './buttons/RemoveStaff'
 import ProgressBar from './ProgressBar'
 import {setStaff} from '../state/staff/staffSlice'
 import { setUsers } from '../state/users/userSlice'

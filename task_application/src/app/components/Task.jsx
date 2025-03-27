@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import MoreInfoButton from './Buttons/MoreInfoButton'
+import MoreInfoButton from './buttons/MoreInfoButton'
 import { useState } from 'react'
 export default function Task( {task, role}) {
   
