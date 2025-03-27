@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { verifyToken } from "@/app/utils/authHelper";
 
-const token = typeof window !== "undefined" ? localStorage.getItem("jwt"): null;
+/* const token = typeof window !== "undefined" ? localStorage.getItem("jwt"): null;
 let initialUser = null;
 let initialIsAuth = false;
 
@@ -15,15 +15,15 @@ if (token) {
         localStorage.removeItem("jwt")
     }
 }
-
+*/
 
 
 
 
 const initialState = {
-    user: initialUser,
-    token: token,
-    isAuthenticated: initialIsAuth
+    user: null,
+    token: null,
+    isAuthenticated: false
 }
 
 const authSlice = createSlice({
@@ -45,6 +45,8 @@ const authSlice = createSlice({
             localStorage.removeItem("jwt")
         },
         checkAuth: (state) => {
+            if (typeof window === "undefined") return;
+            
             console.log("running checkAuth")
             const token = localStorage.getItem("jwt")
             console.log("Token from localstorage", token)
